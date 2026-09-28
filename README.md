@@ -36,6 +36,8 @@ Issue-to-PR workflows.
 | Inspect the earlier separate ownership demo | [Illustrated case study](docs/brownfield-human-gated-delivery-case-study.md) |
 | Run a new AI-native delivery cycle | **[Step-by-step walkthrough: start with preparation](docs/brownfield-human-gated-delivery-walkthrough.md#1-prepare-the-repository)** |
 | Understand Intent/Spec/Plan gaps and improvements | [Early-stage research and implementation status](docs/ai-native-sdlc-early-stage-research.md) |
+| Understand Build/Verify/Deploy/Operate gaps | [Delivery and operations research](docs/ai-native-sdlc-delivery-operations-research.md) |
+| Run trustworthy tests, local release recovery and operational feedback | [Three reliability loops: start here](docs/brownfield-reliability-loops.md) |
 | Run only the service-desk application | [Application quick start](demos/it-service-desk/README.md) |
 | Explore Copilot orchestration patterns | [Agent orchestration guide](docs/copilot-cli-agent-orchestration-patterns.md) |
 
@@ -62,6 +64,15 @@ details and troubleshooting when that path links to them.
   adapters.
 
 ## Final verified delivery
+
+The follow-up [reliability exercises](docs/brownfield-reliability-loops.md)
+reuse this accepted image without changing the application or old approvals.
+They qualify the frozen readiness tests in an isolated copy, reject bad
+configuration at a read-only local gateway, recover from a paused candidate,
+and generate a reviewable operational maintenance task.
+See [actual measured results](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-reliability-rehearsal.md)
+and [the ordinary maintenance follow-up](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/25).
+These are same-image development-test exercises, not production rollback.
 
 - [Implementation PR #23](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/pull/23), protected merge
   `d361ce032b0f729f62b165c23c4f79bb56f29b92`.
