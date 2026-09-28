@@ -24,7 +24,28 @@
         "options": "Backfill a Human-selected default owner for all existing tickets / require an explicit migration mapping for existing tickets / retain existing tickets as unassigned exceptions while requiring ownership for new and subsequently edited tickets; each option trades migration simplicity against attribution accuracy and policy consistency."
       }
     ],
-    "decisions": []
+    "decisions": [
+      {
+        "questionId": "Q-1",
+        "disposition": "resolved",
+        "fields": {
+          "Outcome": "Ownership is optional. Existing and newly created tickets start unassigned; assignment, reassignment and clearing are supported on ticket detail, not on the creation form. Keep all existing ticket identifiers, values and timestamps unchanged during migration.",
+          "Rationale": "This bounded development rehearsal must preserve existing intake and legacy data; responsibility is assigned after triage rather than invented during migration."
+        },
+        "version": 1,
+        "hash": "08109886d3fabd4b16614f2eb5bd0d9ae63d203d8f4282c901f2758253e63448",
+        "contextHash": "ad452e1d67260f3fc9364f609d3556142d82653b521272ba1966183c66df43ea",
+        "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+        "user": {
+          "id": 24954047,
+          "login": "huangyingting",
+          "type": "User"
+        },
+        "commentId": 5862237360,
+        "commentBody": "/sdlc decide spec v1 Q-1\nOutcome: Ownership is optional. Existing and newly created tickets start unassigned; assignment, reassignment and clearing are supported on ticket detail, not on the creation form. Keep all existing ticket identifiers, values and timestamps unchanged during migration.\nRationale: This bounded development rehearsal must preserve existing intake and legacy data; responsibility is assigned after triage rather than invented during migration.\n",
+        "decidedAt": "2026-09-28T02:32:08Z"
+      }
+    ]
   },
   "intent": 1,
   "baseline": "40e17c9853be3655ba927142d1d8e916f262d924",
@@ -47,12 +68,23 @@
     },
     "plan": null
   },
-  "pending": null,
-  "lastCommentId": 5862227159,
+  "pending": {
+    "stage": "spec",
+    "version": 2,
+    "feedback": "Apply Human decision #5862237360 for Q-1. Preserve every question and map the latest decisions to acceptance IDs or explain why no AC changes.",
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "specHash": null,
+    "contextHash": "dff0c64ece5f5918d2cdee962d1347ccc42f82f1c3fd4e4be1584345fc7d7413"
+  },
+  "lastCommentId": 5862237360,
   "receipts": [
     {
       "id": 5862227159,
       "message": "Command #5862227159 rejected: Unresolved discovery blockers: Q-1, Q-2, Q-3, Q-4. Record a Human decision or explicit deferment before approval."
+    },
+    {
+      "id": 5862237360,
+      "message": "Command #5862237360 recorded: decide spec v1."
     }
   ],
   "sealed": false
