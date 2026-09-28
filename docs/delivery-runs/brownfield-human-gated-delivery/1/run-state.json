@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "intent": 1,
+  "repository": "huangyingting/ai-native-sdlc-discovery-demo",
+  "baseline": "40e17c9853be3655ba927142d1d8e916f262d924",
+  "mode": "development-test",
+  "status": "active",
+  "lastCommentId": 0,
+  "delivery": null,
+  "failure": null,
+  "events": []
+}
