@@ -47,8 +47,15 @@
       "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
     }
   },
-  "pending": null,
-  "lastCommentId": 5863070163,
+  "pending": {
+    "stage": "plan",
+    "version": 3,
+    "feedback": "Keep Spec v1, TASK-1 through TASK-5, and all now-correct application-grounded choices. Make one precise Tests-contract clarification: the expected-failure manifest must list every and only named test that actually fails on the pre-implementation baseline, never hypothetical future or subsequently exposed failure names. Replace the phrase about listing subsequently exposed contract failures. Each required readiness test can call a shared route-existence assertion helper from inside its own test body before a guarded dynamic import, so all intended scenario test names produce actual assertion-level Red while the route is absent; do not put this guard in beforeEach/beforeAll or use skipped tests. Those same named tests then exercise the already-written deeper assertions when the implementation is present. Record observed exact names only, preserve the existing37 baseline tests, and freeze all new required assertions and the manifest before Implementation. No other scope, behavior, task-ID, or production change.",
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "specHash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
+    "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+  },
+  "lastCommentId": 5863094005,
   "receipts": [
     {
       "id": 5863041330,
@@ -57,6 +64,10 @@
     {
       "id": 5863070163,
       "message": "Command #5863070163 recorded: revise plan."
+    },
+    {
+      "id": 5863094005,
+      "message": "Command #5863094005 recorded: revise plan."
     }
   ],
   "sealed": false
