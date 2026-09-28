@@ -64,6 +64,26 @@
         "commentId": 5862260763,
         "commentBody": "/sdlc decide spec v2 Q-2\nOutcome: Use only the local roster Avery Stone (avery-stone) and Jordan Lee (jordan-lee), plus Unassigned. Empty ownership form input normalizes to database null. Reject forged nonempty owner values and nonexistent ticket IDs explicitly without mutating any row; an already-current owner is a write-free successful no-op preserving updatedAt. A real change updates only ownership and a nondecreasing updatedAt.\nRationale: Fixed identities keep this small demonstration deterministic without authentication or external directories, while server and storage validation preserve existing records.\n",
         "decidedAt": "2026-09-28T02:34:58Z"
+      },
+      {
+        "questionId": "Q-3",
+        "disposition": "resolved",
+        "fields": {
+          "Outcome": "Include an owner filter with All owners, Unassigned, Avery Stone and Jordan Lee, intersecting existing search/status/priority filters. For AC-3 assign INC-0001 and INC-0003 to Avery, INC-0002 to Jordan, and leave INC-0004 unassigned: All returns 4, Avery returns exactly {0001,0003}, Jordan {0002}, and Unassigned {0004}; Avery+open+high+inc-1 returns only 0001, and Avery+critical returns none. Clearing only owner means All owners while preserving the other filter selections; summary cards remain unfiltered and navigation must not display a stale owner selection.",
+          "Rationale": "Visible responsibility alone does not help agents find their work; exact result sets and preserved filter state make the intended behavior objectively testable."
+        },
+        "version": 3,
+        "hash": "c7f9c19430c9f167d63962b879d46598ce75b290937ee803e0b497fc4c6ad175",
+        "contextHash": "d6c399dadffd63b2bec27882b5f2a031f245f246667dfb4e8a1879e8cc777239",
+        "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+        "user": {
+          "id": 24954047,
+          "login": "huangyingting",
+          "type": "User"
+        },
+        "commentId": 5862281080,
+        "commentBody": "/sdlc decide spec v3 Q-3\nOutcome: Include an owner filter with All owners, Unassigned, Avery Stone and Jordan Lee, intersecting existing search/status/priority filters. For AC-3 assign INC-0001 and INC-0003 to Avery, INC-0002 to Jordan, and leave INC-0004 unassigned: All returns 4, Avery returns exactly {0001,0003}, Jordan {0002}, and Unassigned {0004}; Avery+open+high+inc-1 returns only 0001, and Avery+critical returns none. Clearing only owner means All owners while preserving the other filter selections; summary cards remain unfiltered and navigation must not display a stale owner selection.\nRationale: Visible responsibility alone does not help agents find their work; exact result sets and preserved filter state make the intended behavior objectively testable.\n",
+        "decidedAt": "2026-09-28T02:37:23Z"
       }
     ]
   },
@@ -88,8 +108,15 @@
     },
     "plan": null
   },
-  "pending": null,
-  "lastCommentId": 5862260763,
+  "pending": {
+    "stage": "spec",
+    "version": 4,
+    "feedback": "Apply Human decision #5862281080 for Q-3. Preserve every question and map the latest decisions to acceptance IDs or explain why no AC changes.",
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "specHash": null,
+    "contextHash": "045ee0922a71a003e6b699f4afff918be7e4bd8b400cd4c4d5073f6a18e336a7"
+  },
+  "lastCommentId": 5862281080,
   "receipts": [
     {
       "id": 5862227159,
@@ -102,6 +129,10 @@
     {
       "id": 5862260763,
       "message": "Command #5862260763 recorded: decide spec v2."
+    },
+    {
+      "id": 5862281080,
+      "message": "Command #5862281080 recorded: decide spec v3."
     }
   ],
   "sealed": false
