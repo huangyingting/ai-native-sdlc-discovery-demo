@@ -80,6 +80,10 @@ function withoutOwnershipUpdate(ticket: OwnedTicket) {
   return snapshot;
 }
 
+function dataVersion(database: DatabaseSync) {
+  return (database.prepare("PRAGMA data_version").get() as { data_version: number }).data_version;
+}
+
 afterEach(() => {
   while (openStores.length) openStores.pop()?.close();
   while (temporaryDirectories.length) {
@@ -196,64 +200,93 @@ describe("TicketStore", () => {
   it("migrates a persisted ownerless database without changing legacy ticket data", () => {
     const { filename, rows: before } = createLegacyDatabase();
     const ticketStore = createTestStore(filename);
-    const tickets = ticketStore.list() as OwnedTicket[];
+    try {
+      const tickets = ticketStore.list() as OwnedTicket[];
+      expect(tickets.every((ticket) => Object.hasOwn(ticket, "owner"))).toBe(true);
+      expect(tickets.map((ticket) => ticket.owner)).toEqual([null, null, null, null]);
+      expect(ticketStore.summary()).toEqual({ open: 2, inProgress: 1, resolved: 1, urgent: 2 });
 
-    expect(tickets.every((ticket) => Object.hasOwn(ticket, "owner"))).toBe(true);
-    expect(tickets.map((ticket) => ticket.owner)).toEqual([null, null, null, null]);
-    expect(ticketStore.summary()).toEqual({ open: 2, inProgress: 1, resolved: 1, urgent: 2 });
-
-    const database = new DatabaseSync(filename);
-    expect(database.prepare("SELECT owner FROM tickets ORDER BY id").all()).toEqual([
-      { owner: null },
-      { owner: null },
-      { owner: null },
-      { owner: null },
-    ]);
-    expect(database.prepare(`
-      SELECT id, title, description, category, priority, status,
-        requester_name, requester_email, created_at, updated_at
-      FROM tickets ORDER BY id
-    `).all()).toEqual(before);
-    database.close();
+      const database = new DatabaseSync(filename);
+      try {
+        expect(database.prepare("SELECT owner FROM tickets ORDER BY id").all()).toEqual([
+          { owner: null },
+          { owner: null },
+          { owner: null },
+          { owner: null },
+        ]);
+        expect(database.prepare(`
+          SELECT id, title, description, category, priority, status,
+            requester_name, requester_email, created_at, updated_at
+          FROM tickets ORDER BY id
+        `).all()).toEqual(before);
+      } finally {
+        database.close();
+      }
+    } finally {
+      if (openStores.includes(ticketStore)) closeTestStore(ticketStore);
+    }
   });
 
-  it("assigns, reassigns, clears, and avoids writes for repeated ownership", () => {
+  it("persists every ownership transition without changing unrelated fields or regressing timestamps", () => {
     const { filename } = createLegacyDatabase();
-    let ticketStore = createTestStore(filename);
-    let ownershipStore = requireOwnershipStore(ticketStore);
-    const original = ownershipStore.find(1) as OwnedTicket;
+    const futureTimestamp = "2099-12-31T23:59:59.999Z";
     const database = new DatabaseSync(filename);
-    database.exec(`
-      CREATE TABLE ownership_writes (count INTEGER NOT NULL);
-      INSERT INTO ownership_writes VALUES (0);
-      CREATE TRIGGER count_ownership_writes
-      AFTER UPDATE OF owner ON tickets
-      BEGIN
-        UPDATE ownership_writes SET count = count + 1;
-      END;
-    `);
+    try {
+      database.prepare("UPDATE tickets SET updated_at = ? WHERE id = 1").run(futureTimestamp);
+    } finally {
+      database.close();
+    }
+    let ticketStore: TicketStore | undefined;
+    try {
+      ticketStore = createTestStore(filename);
+      let ownershipStore = requireOwnershipStore(ticketStore);
 
-    ownershipStore.updateOwner(1, "avery-stone");
-    const assigned = ownershipStore.find(1) as OwnedTicket;
-    expect(assigned.owner).toBe("avery-stone");
-    expect(withoutOwnershipUpdate(assigned)).toEqual(withoutOwnershipUpdate(original));
-    expect(assigned.updatedAt >= original.updatedAt).toBe(true);
+      const transition = (owner: TicketOwner | "") => {
+        const before = ownershipStore.find(1) as OwnedTicket;
+        ownershipStore.updateOwner(1, owner);
+        const after = ownershipStore.find(1) as OwnedTicket;
+        expect(after.owner).toBe(owner || null);
+        expect(withoutOwnershipUpdate(after)).toEqual(withoutOwnershipUpdate(before));
+        expect(after.updatedAt >= before.updatedAt).toBe(true);
+        closeTestStore(ticketStore!);
+        ticketStore = createTestStore(filename);
+        ownershipStore = requireOwnershipStore(ticketStore);
+        expect(ownershipStore.find(1)).toEqual(after);
+      };
 
-    closeTestStore(ticketStore);
-    ticketStore = createTestStore(filename);
-    ownershipStore = requireOwnershipStore(ticketStore);
-    expect((ownershipStore.find(1) as OwnedTicket).owner).toBe("avery-stone");
+      transition("avery-stone");
+      transition("jordan-lee");
+      transition("");
+    } finally {
+      if (ticketStore && openStores.includes(ticketStore)) closeTestStore(ticketStore);
+    }
+  });
 
-    ownershipStore.updateOwner(1, "jordan-lee");
-    expect((ownershipStore.find(1) as OwnedTicket).owner).toBe("jordan-lee");
-    ownershipStore.updateOwner(1, "");
-    const cleared = ownershipStore.find(1) as OwnedTicket;
-    expect(cleared.owner).toBeNull();
-    const writesBeforeNoop = database.prepare("SELECT count FROM ownership_writes").get();
-    ownershipStore.updateOwner(1, "");
-    expect(database.prepare("SELECT count FROM ownership_writes").get()).toEqual(writesBeforeNoop);
-    expect(ownershipStore.find(1)).toEqual(cleared);
-    database.close();
+  it("performs no database write for repeated assigned and unassigned ownership", () => {
+    const { filename } = createLegacyDatabase();
+    let ticketStore: TicketStore | undefined;
+    let observer: DatabaseSync | undefined;
+    try {
+      ticketStore = createTestStore(filename);
+      const ownershipStore = requireOwnershipStore(ticketStore);
+      observer = new DatabaseSync(filename);
+
+      const unassigned = ownershipStore.find(1) as OwnedTicket;
+      const beforeUnassignedNoop = dataVersion(observer);
+      ownershipStore.updateOwner(1, "");
+      expect(dataVersion(observer)).toBe(beforeUnassignedNoop);
+      expect(ownershipStore.find(1)).toEqual(unassigned);
+
+      ownershipStore.updateOwner(1, "avery-stone");
+      const assigned = ownershipStore.find(1) as OwnedTicket;
+      const beforeAssignedNoop = dataVersion(observer);
+      ownershipStore.updateOwner(1, "avery-stone");
+      expect(dataVersion(observer)).toBe(beforeAssignedNoop);
+      expect(ownershipStore.find(1)).toEqual(assigned);
+    } finally {
+      if (observer) observer.close();
+      if (ticketStore && openStores.includes(ticketStore)) closeTestStore(ticketStore);
+    }
   });
 
   it("combines exact owner result sets with existing queue filters", () => {

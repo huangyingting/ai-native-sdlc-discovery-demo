@@ -26,12 +26,19 @@ function findCustomSelects(node: ReactNode): ComponentProps<typeof CustomSelect>
 }
 
 describe("Ticket detail and creation", () => {
-  it("exposes an accessible owner handoff while keeping ticket intake ownerless", async () => {
+  it("renders assigned and unassigned owner metadata with an accessible handoff while keeping intake ownerless", async () => {
+    const ownershipStore = getTicketStore() as ReturnType<typeof getTicketStore> & {
+      updateOwner?: (id: number, owner: "avery-stone" | "jordan-lee" | "") => unknown;
+    };
+    expect(typeof ownershipStore.updateOwner).toBe("function");
+    if (!ownershipStore.updateOwner) return;
+    ownershipStore.updateOwner(1, "avery-stone");
+
     const element = await TicketPage({ params: Promise.resolve({ id: "1" }) });
     const ownerSelect = findCustomSelects(element).find((select) => select.name === "owner");
     expect(ownerSelect).toBeDefined();
     expect(ownerSelect).toMatchObject({
-      defaultValue: "",
+      defaultValue: "avery-stone",
       id: "owner",
       options: [
         { value: "", label: "Unassigned" },
@@ -44,8 +51,18 @@ describe("Ticket detail and creation", () => {
     container.innerHTML = renderToStaticMarkup(element);
     const trigger = container.querySelector<HTMLButtonElement>("#owner")!;
     expect(trigger.labels?.[0].textContent).toMatch(/owner/i);
-    expect(container.querySelector(`#${trigger.getAttribute("aria-describedby")}`)?.textContent).toBe("Unassigned");
-    expect(container.textContent).toContain("Unassigned");
+    expect(container.querySelector(`#${trigger.getAttribute("aria-describedby")}`)?.textContent).toBe("Avery Stone");
+    const assignedOwner = [...container.querySelectorAll(".detail-list div")]
+      .find((entry) => entry.querySelector("dt")?.textContent === "Owner");
+    expect(assignedOwner?.querySelector("dd")?.textContent).toBe("Avery Stone");
+
+    const unassigned = document.createElement("div");
+    unassigned.innerHTML = renderToStaticMarkup(
+      await TicketPage({ params: Promise.resolve({ id: "4" }) }),
+    );
+    const unassignedOwner = [...unassigned.querySelectorAll(".detail-list div")]
+      .find((entry) => entry.querySelector("dt")?.textContent === "Owner");
+    expect(unassignedOwner?.querySelector("dd")?.textContent).toBe("Unassigned");
 
     const creation = document.createElement("div");
     creation.innerHTML = renderToStaticMarkup(<TicketForm />);

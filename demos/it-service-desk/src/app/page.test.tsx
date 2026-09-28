@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
 import { readFileSync } from "node:fs";
-import { Children, isValidElement, type ComponentProps, type ReactNode } from "react";
+import { act, Children, isValidElement, type ComponentProps, type ReactNode } from "react";
+import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { getTicketStore } from "@/lib/ticket-store";
@@ -60,6 +61,43 @@ describe("Dashboard", () => {
   });
 
   it("renders synchronized accessible owner filtering and unfiltered summary cards", async () => {
+    const ownershipStore = getTicketStore() as ReturnType<typeof getTicketStore> & {
+      updateOwner?: (id: number, owner: "avery-stone" | "jordan-lee" | "") => unknown;
+    };
+    expect(typeof ownershipStore.updateOwner).toBe("function");
+    if (!ownershipStore.updateOwner) return;
+    for (const ticket of [
+      {
+        title: "Request access to finance reporting",
+        description: "Please add read-only access to the monthly finance reporting workspace.",
+        category: "Access and identity" as const,
+        priority: "medium" as const,
+        requesterName: "Daniel Foster",
+        requesterEmail: "daniel.foster@example.com",
+      },
+      {
+        title: "Teams microphone is not detected",
+        description: "The built-in microphone works in Windows settings but is unavailable in Teams calls.",
+        category: "Email and collaboration" as const,
+        priority: "low" as const,
+        requesterName: "Priya Shah",
+        requesterEmail: "priya.shah@example.com",
+      },
+      {
+        title: "Executive laptop will not start",
+        description: "The laptop shows a blank screen after the latest firmware update.",
+        category: "Device and hardware" as const,
+        priority: "critical" as const,
+        requesterName: "Alex Morgan",
+        requesterEmail: "alex.morgan@example.com",
+      },
+    ]) {
+      ownershipStore.create(ticket);
+    }
+    ownershipStore.updateOwner(1, "avery-stone");
+    ownershipStore.updateOwner(2, "jordan-lee");
+    ownershipStore.updateOwner(3, "avery-stone");
+
     const element = await Dashboard({
       searchParams: Promise.resolve({
         owner: "avery-stone",
@@ -96,10 +134,53 @@ describe("Dashboard", () => {
     expect([...container.querySelectorAll(".metric strong")].map((node) => Number(node.textContent))).toEqual(
       Object.values(getTicketStore().summary()),
     );
+    const assignedRows = [...container.querySelectorAll(".ticket-row")];
+    expect(assignedRows).toHaveLength(1);
+    expect(assignedRows.every((row) => row.textContent?.includes("Avery Stone"))).toBe(true);
 
-    const restored = await Dashboard({
-      searchParams: Promise.resolve({ owner: "jordan-lee" }),
-    });
-    expect(findCustomSelects(restored).find((select) => select.name === "owner")?.defaultValue).toBe("jordan-lee");
+    const unassigned = document.createElement("div");
+    unassigned.innerHTML = renderToStaticMarkup(await Dashboard({
+      searchParams: Promise.resolve({ owner: "unassigned" }),
+    }));
+    const unassignedRows = [...unassigned.querySelectorAll(".ticket-row")];
+    expect(unassignedRows).toHaveLength(1);
+    expect(unassignedRows.every((row) => row.textContent?.includes("Unassigned"))).toBe(true);
+
+    const mounted = document.createElement("div");
+    document.body.append(mounted);
+    const root = createRoot(mounted);
+    try {
+      act(() => root.render(element));
+      const mountedOwner = mounted.querySelector<HTMLButtonElement>("#owner")!;
+      act(() => mountedOwner.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "Home",
+        bubbles: true,
+        cancelable: true,
+      })));
+      act(() => mountedOwner.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+        cancelable: true,
+      })));
+      expect(Object.fromEntries(new FormData(
+        mounted.querySelector<HTMLFormElement>(".filters")!,
+      ))).toMatchObject({
+        owner: "",
+        priority: "high",
+        q: "inc-1",
+        status: "open",
+      });
+
+      const restored = await Dashboard({
+        searchParams: Promise.resolve({ owner: "jordan-lee" }),
+      });
+      act(() => root.render(restored));
+      const restoredOwner = mounted.querySelector<HTMLButtonElement>("#owner")!;
+      expect(restoredOwner.textContent).toContain("Jordan Lee");
+      expect(new FormData(mounted.querySelector("form")!).get("owner")).toBe("jordan-lee");
+    } finally {
+      act(() => root.unmount());
+      mounted.remove();
+    }
   });
 });

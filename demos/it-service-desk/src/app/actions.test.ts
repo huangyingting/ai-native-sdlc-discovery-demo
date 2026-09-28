@@ -1,4 +1,5 @@
-import { afterAll, describe, expect, it, vi } from "vitest";
+import { revalidatePath } from "next/cache";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { getTicketStore } from "@/lib/ticket-store";
 import * as actions from "./actions";
 
@@ -11,14 +12,26 @@ vi.mock("@/lib/ticket-store", async (importOriginal) => {
 });
 
 afterAll(() => getTicketStore().close());
+beforeEach(() => vi.clearAllMocks());
+
+function ownerAction() {
+  return (
+    actions as typeof actions & {
+      updateTicketOwnerAction?: (formData: FormData) => Promise<unknown>;
+    }
+  ).updateTicketOwnerAction;
+}
+
+function ownershipForm(owner: string) {
+  const formData = new FormData();
+  formData.set("id", "1");
+  formData.set("owner", owner);
+  return formData;
+}
 
 describe("ownership action", () => {
   it("rejects forged owners and missing tickets without mutating any row", async () => {
-    const updateTicketOwnerAction = (
-      actions as typeof actions & {
-        updateTicketOwnerAction?: (formData: FormData) => Promise<unknown>;
-      }
-    ).updateTicketOwnerAction;
+    const updateTicketOwnerAction = ownerAction();
     expect(typeof updateTicketOwnerAction).toBe("function");
     if (!updateTicketOwnerAction) return;
 
@@ -34,5 +47,28 @@ describe("ownership action", () => {
     missing.set("owner", "avery-stone");
     await expect(updateTicketOwnerAction(missing)).rejects.toThrow(/not found/i);
     expect(getTicketStore().list()).toEqual(before);
+  });
+
+  it("assigns, reassigns, and clears ownership while revalidating queue and detail", async () => {
+    const updateTicketOwnerAction = ownerAction();
+    expect(typeof updateTicketOwnerAction).toBe("function");
+    if (!updateTicketOwnerAction) return;
+
+    for (const [owner, storedOwner] of [
+      ["avery-stone", "avery-stone"],
+      ["jordan-lee", "jordan-lee"],
+      ["", null],
+    ] as const) {
+      await updateTicketOwnerAction(ownershipForm(owner));
+      expect(getTicketStore().find(1)).toMatchObject({ owner: storedOwner });
+    }
+    expect(vi.mocked(revalidatePath).mock.calls).toEqual([
+      ["/"],
+      ["/tickets/1"],
+      ["/"],
+      ["/tickets/1"],
+      ["/"],
+      ["/tickets/1"],
+    ]);
   });
 });

@@ -7,7 +7,11 @@
       "acceptance": ["AC-1"]
     },
     {
-      "name": "TicketStore assigns, reassigns, clears, and avoids writes for repeated ownership",
+      "name": "TicketStore persists every ownership transition without changing unrelated fields or regressing timestamps",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "TicketStore performs no database write for repeated assigned and unassigned ownership",
       "acceptance": ["AC-2"]
     },
     {
@@ -27,11 +31,15 @@
       "acceptance": ["AC-2", "AC-4"]
     },
     {
+      "name": "ownership action assigns, reassigns, and clears ownership while revalidating queue and detail",
+      "acceptance": ["AC-2"]
+    },
+    {
       "name": "Dashboard renders synchronized accessible owner filtering and unfiltered summary cards",
       "acceptance": ["AC-2", "AC-3", "AC-4"]
     },
     {
-      "name": "Ticket detail and creation exposes an accessible owner handoff while keeping ticket intake ownerless",
+      "name": "Ticket detail and creation renders assigned and unassigned owner metadata with an accessible handoff while keeping intake ownerless",
       "acceptance": ["AC-2", "AC-4", "AC-5"]
     }
   ]
