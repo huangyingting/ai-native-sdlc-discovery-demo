@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "intent": 17,
+  "tests": [
+    {
+      "name": "GET /api/ready reports exact readiness after an application ticket summary read",
+      "acceptance": ["AC-1", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready reports exact unavailability when the store cannot initialize",
+      "acceptance": ["AC-2", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready reports exact unavailability when the summary read fails",
+      "acceptance": ["AC-3", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready logs one fixed generic failure without sensitive details",
+      "acceptance": ["AC-4", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready retries failed initialization after storage is repaired",
+      "acceptance": ["AC-5", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready performs a fresh summary read on every successful request",
+      "acceptance": ["AC-6", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready forces dynamic evaluation rather than prerendering readiness",
+      "acceptance": ["AC-6", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready rejects an invalid database path while preserving liveness",
+      "acceptance": ["AC-7", "AC-11", "AC-12"]
+    },
+    {
+      "name": "GET /api/ready allows first-use schema creation and database seeding",
+      "acceptance": ["AC-9", "AC-12", "AC-13"]
+    },
+    {
+      "name": "GET /api/ready allows nullable ownership migration during first readiness",
+      "acceptance": ["AC-9", "AC-12", "AC-13"]
+    },
+    {
+      "name": "GET /api/ready preserves every persisted ticket field across repeated probes",
+      "acceptance": ["AC-8", "AC-10", "AC-12", "AC-13"]
+    }
+  ]
+}
