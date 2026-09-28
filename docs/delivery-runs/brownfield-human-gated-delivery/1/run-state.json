@@ -6,7 +6,26 @@
   "mode": "development-test",
   "status": "active",
   "lastCommentId": 0,
-  "delivery": null,
+  "delivery": {
+    "runId": "36374182779",
+    "runAttempt": 2,
+    "image": "ghcr.io/huangyingting/ai-native-sdlc-discovery-demo-it-service-desk",
+    "digest": "sha256:09bf8f338aaccaacb0290eafc6fe65c7f917cd8642688406aef93d24b0eb36a2",
+    "mergeSha": "a2004d37bab5d4dbc758f3bdf9599547b4a45ad0",
+    "pullNumber": 7,
+    "runUrl": "https://github.com/huangyingting/ai-native-sdlc-discovery-demo/actions/runs/36374182779",
+    "verified": true,
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "acceptances": [],
+    "rejection": null
+  },
   "failure": null,
-  "events": []
+  "events": [
+    {
+      "type": "verification-passed",
+      "at": "2026-09-28T03:35:47.893Z",
+      "runId": "36374182779",
+      "runAttempt": 2
+    }
+  ]
 }
