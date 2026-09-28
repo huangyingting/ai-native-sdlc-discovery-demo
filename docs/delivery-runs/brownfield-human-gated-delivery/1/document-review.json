@@ -94,28 +94,21 @@
     "body": "Delivery Execution: development-test\n\nThis is an explicitly authorized scripted development rehearsal using the\nrepository owner's account. It is not independent Human review, genuine Human\nacceptance, or evidence of three completed live scenarios. Use the actual\nversion-bound decision commands; do not infer approval from this statement.\n\n## Problem or opportunity\n\nThe existing IT service desk under demos/it-service-desk can create, search,\nand update tickets, but has no owner field. During the simulated support-team\nhandoff, agents cannot see who is responsible or identify unassigned work.\nThe source baseline demonstrates the missing capability. We have no customer\ninterviews, measured business baseline, or verified productivity claims.\n\n## Proposed outcome\n\nMake responsibility visible on the queue and ticket detail, support a simple\nownership handoff, and preserve existing tickets and workflows. Evaluate the\nresult using observable application behavior, exact fixture result sets, and\ndata preservation, not invented business metrics. Alternatives include keeping\nthe current process or adding only visibility without filtering.\n\n## Affected users and systems\n\nSupport agents and team leads using the existing SQLite-backed IT service desk.\nThe fixture people and tickets are synthetic demonstration data.\n\n## Constraints and non-goals\n\nKeep a small brownfield change. Preserve ticket identifiers, existing values\nand timestamps during migration, and preserve create/status/search/summary\nbehavior. Use labeled keyboard-usable controls, explicit invalid-input errors,\nand persisted behavior after restarting the same container/volume.\n\nDo not add authentication, external identity integration, notifications, SLAs,\nbulk assignment, free-text audit history, or unrelated dashboards.\n\nThe existing ownership scenario manifest and acceptance checklist are candidate\ndemo fixtures and observable checks, not a substitute for answering the policy\nquestions below. After those decisions, retain AC-1 through AC-5 for migration,\nassignment/reassignment/clearing, exact filter intersections, accessibility and\ninvalid-input preservation, and unchanged ticket creation/status behavior.\nDo not copy implementation from the previously completed demo repository.\n\n## Open questions\n\nRegister these three policy choices as blocking discovery questions; do not\nsilently decide them from candidate fixtures or older example documents:\n\n1. May tickets remain unassigned (including existing and new tickets), or must\n   every ticket have an owner?\n2. Should owners come from the fixed local roster Avery Stone (avery-stone)\n   and Jordan Lee (jordan-lee), or be entered as free text?\n3. Is displaying ownership sufficient, or should the queue also filter by\n   owner in combination with existing search, status, and priority filters?\n\nAdditional consequential ambiguities should be made explicit rather than\ninventing decisions. AI proposes the Spec; only recorded decisions followed\nby explicit approval authorize advancement.\n"
   },
   "counters": {
-    "spec": 3,
+    "spec": 4,
     "plan": 0
   },
   "documents": {
     "spec": {
-      "version": 3,
-      "hash": "c7f9c19430c9f167d63962b879d46598ce75b290937ee803e0b497fc4c6ad175",
+      "version": 4,
+      "hash": "9cb8ca3418123b41d224c004f686c2910ac477824eb830188d1fd6ab448e5843",
       "specHash": null,
       "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
       "approvals": [],
-      "contextHash": "d6c399dadffd63b2bec27882b5f2a031f245f246667dfb4e8a1879e8cc777239"
+      "contextHash": "045ee0922a71a003e6b699f4afff918be7e4bd8b400cd4c4d5073f6a18e336a7"
     },
     "plan": null
   },
-  "pending": {
-    "stage": "spec",
-    "version": 4,
-    "feedback": "Apply Human decision #5862281080 for Q-3. Preserve every question and map the latest decisions to acceptance IDs or explain why no AC changes.",
-    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-    "specHash": null,
-    "contextHash": "045ee0922a71a003e6b699f4afff918be7e4bd8b400cd4c4d5073f6a18e336a7"
-  },
+  "pending": null,
   "lastCommentId": 5862281080,
   "receipts": [
     {
