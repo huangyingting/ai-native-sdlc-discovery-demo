@@ -123,13 +123,27 @@
       "hash": "2c83c21448da10ba0a70d53aa7d7e8378ce4efe4dd8cad00928b87f7eb83eb7b",
       "specHash": null,
       "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-      "approvals": [],
+      "approvals": [
+        {
+          "user": {
+            "id": 24954047,
+            "login": "huangyingting",
+            "type": "User"
+          },
+          "commentId": 5862323649,
+          "commentBody": "/sdlc approve spec v5",
+          "approvedAt": "2026-09-28T02:42:18Z",
+          "hash": "2c83c21448da10ba0a70d53aa7d7e8378ce4efe4dd8cad00928b87f7eb83eb7b",
+          "version": 5,
+          "contextHash": "e5910be86d96486c29fd5e5d5f1dfb614e455b03e6b1aa5d744712115961c60f"
+        }
+      ],
       "contextHash": "e5910be86d96486c29fd5e5d5f1dfb614e455b03e6b1aa5d744712115961c60f"
     },
     "plan": null
   },
   "pending": null,
-  "lastCommentId": 5862300128,
+  "lastCommentId": 5862323649,
   "receipts": [
     {
       "id": 5862227159,
@@ -150,6 +164,10 @@
     {
       "id": 5862300128,
       "message": "Command #5862300128 recorded: decide spec v4."
+    },
+    {
+      "id": 5862323649,
+      "message": "Command #5862323649 recorded: approve spec v5."
     }
   ],
   "sealed": false
