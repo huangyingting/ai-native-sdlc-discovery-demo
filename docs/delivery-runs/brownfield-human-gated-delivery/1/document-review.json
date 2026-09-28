@@ -44,6 +44,26 @@
         "commentId": 5862237360,
         "commentBody": "/sdlc decide spec v1 Q-1\nOutcome: Ownership is optional. Existing and newly created tickets start unassigned; assignment, reassignment and clearing are supported on ticket detail, not on the creation form. Keep all existing ticket identifiers, values and timestamps unchanged during migration.\nRationale: This bounded development rehearsal must preserve existing intake and legacy data; responsibility is assigned after triage rather than invented during migration.\n",
         "decidedAt": "2026-09-28T02:32:08Z"
+      },
+      {
+        "questionId": "Q-2",
+        "disposition": "resolved",
+        "fields": {
+          "Outcome": "Use only the local roster Avery Stone (avery-stone) and Jordan Lee (jordan-lee), plus Unassigned. Empty ownership form input normalizes to database null. Reject forged nonempty owner values and nonexistent ticket IDs explicitly without mutating any row; an already-current owner is a write-free successful no-op preserving updatedAt. A real change updates only ownership and a nondecreasing updatedAt.",
+          "Rationale": "Fixed identities keep this small demonstration deterministic without authentication or external directories, while server and storage validation preserve existing records."
+        },
+        "version": 2,
+        "hash": "b47f62475b9d1edc4e56549227fd1800c3a34efdf8771584a6de2fa7774bfdcd",
+        "contextHash": "dff0c64ece5f5918d2cdee962d1347ccc42f82f1c3fd4e4be1584345fc7d7413",
+        "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+        "user": {
+          "id": 24954047,
+          "login": "huangyingting",
+          "type": "User"
+        },
+        "commentId": 5862260763,
+        "commentBody": "/sdlc decide spec v2 Q-2\nOutcome: Use only the local roster Avery Stone (avery-stone) and Jordan Lee (jordan-lee), plus Unassigned. Empty ownership form input normalizes to database null. Reject forged nonempty owner values and nonexistent ticket IDs explicitly without mutating any row; an already-current owner is a write-free successful no-op preserving updatedAt. A real change updates only ownership and a nondecreasing updatedAt.\nRationale: Fixed identities keep this small demonstration deterministic without authentication or external directories, while server and storage validation preserve existing records.\n",
+        "decidedAt": "2026-09-28T02:34:58Z"
       }
     ]
   },
@@ -68,8 +88,15 @@
     },
     "plan": null
   },
-  "pending": null,
-  "lastCommentId": 5862237360,
+  "pending": {
+    "stage": "spec",
+    "version": 3,
+    "feedback": "Apply Human decision #5862260763 for Q-2. Preserve every question and map the latest decisions to acceptance IDs or explain why no AC changes.",
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "specHash": null,
+    "contextHash": "d6c399dadffd63b2bec27882b5f2a031f245f246667dfb4e8a1879e8cc777239"
+  },
+  "lastCommentId": 5862260763,
   "receipts": [
     {
       "id": 5862227159,
@@ -78,6 +105,10 @@
     {
       "id": 5862237360,
       "message": "Command #5862237360 recorded: decide spec v1."
+    },
+    {
+      "id": 5862260763,
+      "message": "Command #5862260763 recorded: decide spec v2."
     }
   ],
   "sealed": false
