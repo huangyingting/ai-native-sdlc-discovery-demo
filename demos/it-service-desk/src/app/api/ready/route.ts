@@ -9,14 +9,7 @@ export function GET() {
       { status: "ready" },
       { headers: { "Cache-Control": "no-store" } },
     );
-  } catch (error) {
-    if (error instanceof Error) {
-      for (const key of Object.keys(error)) Reflect.deleteProperty(error, key);
-      Reflect.deleteProperty(error, "cause");
-      error.name = "Error";
-      error.message = "Storage operation failed";
-      error.stack = undefined;
-    }
+  } catch {
     console.error("Service desk readiness check failed");
     return Response.json(
       { status: "unavailable" },
