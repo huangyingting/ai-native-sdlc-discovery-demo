@@ -84,6 +84,26 @@
         "commentId": 5862281080,
         "commentBody": "/sdlc decide spec v3 Q-3\nOutcome: Include an owner filter with All owners, Unassigned, Avery Stone and Jordan Lee, intersecting existing search/status/priority filters. For AC-3 assign INC-0001 and INC-0003 to Avery, INC-0002 to Jordan, and leave INC-0004 unassigned: All returns 4, Avery returns exactly {0001,0003}, Jordan {0002}, and Unassigned {0004}; Avery+open+high+inc-1 returns only 0001, and Avery+critical returns none. Clearing only owner means All owners while preserving the other filter selections; summary cards remain unfiltered and navigation must not display a stale owner selection.\nRationale: Visible responsibility alone does not help agents find their work; exact result sets and preserved filter state make the intended behavior objectively testable.\n",
         "decidedAt": "2026-09-28T02:37:23Z"
+      },
+      {
+        "questionId": "Q-4",
+        "disposition": "resolved",
+        "fields": {
+          "Outcome": "The mandatory-ownership condition does not apply because Q-1 selected optional ownership. Migrate existing tickets to null/Unassigned with no default owner or attribution mapping, preserve every pre-existing field and timestamp exactly, and keep all four fixed scenario fixtures and initial summary counts unchanged. Test a real old-schema database with persisted rows, not just a freshly seeded new schema.",
+          "Rationale": "This explicitly disposes of the conditional migration question without inventing responsibility or treating fresh seeding as proof of data-preserving migration."
+        },
+        "version": 4,
+        "hash": "9cb8ca3418123b41d224c004f686c2910ac477824eb830188d1fd6ab448e5843",
+        "contextHash": "045ee0922a71a003e6b699f4afff918be7e4bd8b400cd4c4d5073f6a18e336a7",
+        "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+        "user": {
+          "id": 24954047,
+          "login": "huangyingting",
+          "type": "User"
+        },
+        "commentId": 5862300128,
+        "commentBody": "/sdlc decide spec v4 Q-4\nOutcome: The mandatory-ownership condition does not apply because Q-1 selected optional ownership. Migrate existing tickets to null/Unassigned with no default owner or attribution mapping, preserve every pre-existing field and timestamp exactly, and keep all four fixed scenario fixtures and initial summary counts unchanged. Test a real old-schema database with persisted rows, not just a freshly seeded new schema.\nRationale: This explicitly disposes of the conditional migration question without inventing responsibility or treating fresh seeding as proof of data-preserving migration.\n",
+        "decidedAt": "2026-09-28T02:39:47Z"
       }
     ]
   },
@@ -108,8 +128,15 @@
     },
     "plan": null
   },
-  "pending": null,
-  "lastCommentId": 5862281080,
+  "pending": {
+    "stage": "spec",
+    "version": 5,
+    "feedback": "Apply Human decision #5862300128 for Q-4. Preserve every question and map the latest decisions to acceptance IDs or explain why no AC changes.",
+    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+    "specHash": null,
+    "contextHash": "e5910be86d96486c29fd5e5d5f1dfb614e455b03e6b1aa5d744712115961c60f"
+  },
+  "lastCommentId": 5862300128,
   "receipts": [
     {
       "id": 5862227159,
@@ -126,6 +153,10 @@
     {
       "id": 5862281080,
       "message": "Command #5862281080 recorded: decide spec v3."
+    },
+    {
+      "id": 5862300128,
+      "message": "Command #5862300128 recorded: decide spec v4."
     }
   ],
   "sealed": false
