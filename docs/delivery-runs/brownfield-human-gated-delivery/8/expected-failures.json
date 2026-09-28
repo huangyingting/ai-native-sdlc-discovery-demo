@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "intent": 8,
+  "tests": [
+    {
+      "name": "GET /api/ready reports exact readiness after an application ticket summary read",
+      "acceptance": ["AC-1"]
+    },
+    {
+      "name": "GET /api/ready reports exact unavailability when the store cannot initialize",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "GET /api/ready reports exact unavailability when the ticket query fails",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "GET /api/ready logs only a bounded generic failure without sensitive details",
+      "acceptance": ["AC-3"]
+    },
+    {
+      "name": "GET /api/ready retries failed initialization after storage is repaired",
+      "acceptance": ["AC-4"]
+    },
+    {
+      "name": "GET /api/ready performs a fresh summary read on every successful request",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "name": "GET /api/ready forces dynamic evaluation rather than prerendering readiness",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "name": "GET /api/ready preserves all persisted fields of owned tickets across repeated probes",
+      "acceptance": ["AC-6"]
+    },
+    {
+      "name": "GET /api/ready allows first-use schema creation and empty-database seeding",
+      "acceptance": ["AC-7"]
+    },
+    {
+      "name": "GET /api/ready allows existing ownership-column migration during first readiness",
+      "acceptance": ["AC-7"]
+    },
+    {
+      "name": "GET /api/ready keeps process liveness independent of failing ticket storage",
+      "acceptance": ["AC-8"]
+    }
+  ]
+}
