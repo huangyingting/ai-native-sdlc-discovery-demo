@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "intent": 1,
+  "tests": [
+    {
+      "name": "TicketStore migrates a persisted ownerless database without changing legacy ticket data",
+      "acceptance": ["AC-1"]
+    },
+    {
+      "name": "TicketStore persists every ownership transition without changing unrelated fields or regressing timestamps",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "TicketStore performs no database write for repeated assigned and unassigned ownership",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "TicketStore combines exact owner result sets with existing queue filters",
+      "acceptance": ["AC-3"]
+    },
+    {
+      "name": "TicketStore rejects invalid ownership requests without mutating any ticket",
+      "acceptance": ["AC-4"]
+    },
+    {
+      "name": "TicketStore keeps creation unassigned and preserves ownership during status updates",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "name": "ownership action rejects forged owners and missing tickets without mutating any row",
+      "acceptance": ["AC-2", "AC-4"]
+    },
+    {
+      "name": "ownership action assigns, reassigns, and clears ownership while revalidating queue and detail",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "name": "Dashboard renders synchronized accessible owner filtering and unfiltered summary cards",
+      "acceptance": ["AC-2", "AC-3", "AC-4"]
+    },
+    {
+      "name": "Ticket detail and creation renders assigned and unassigned owner metadata with an accessible handoff while keeping intake ownerless",
+      "acceptance": ["AC-2", "AC-4", "AC-5"]
+    }
+  ]
+}
