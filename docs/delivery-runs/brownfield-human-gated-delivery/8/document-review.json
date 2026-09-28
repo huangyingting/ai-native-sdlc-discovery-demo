@@ -13,7 +13,7 @@
   },
   "counters": {
     "spec": 1,
-    "plan": 1
+    "plan": 2
   },
   "documents": {
     "spec": {
@@ -39,22 +39,15 @@
       "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
     },
     "plan": {
-      "version": 1,
-      "hash": "fa9b2a094fde4b7c076ba999941248711e49c4e7bea9465431c55bd38a5424c8",
+      "version": 2,
+      "hash": "ce02c99cc285d9eb4eda930afa46071f72a1426f06527799094c4bfbe0fa5cbd",
       "specHash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
       "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
       "approvals": [],
       "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
     }
   },
-  "pending": {
-    "stage": "plan",
-    "version": 2,
-    "feedback": "Preserve approved Spec v1 and stable TASK IDs. Ground the plan in the actual application, not an assumed harness: package.json runs Vitest directly; the six existing test files import modules or render React, and there is no existing public HTTP test harness. Replace TASK-1 and Controlled Red validation accordingly. Use a new readiness-focused Vitest file, with an explicit test-body assertion that the new route exists before any guarded dynamic import so Red is an assertion rather than a missing-module/collection error. Do not add a server-launch test harness, dependencies, or modify production during Tests. Once present, directly call the route handler and assert the real Response status/body/headers using current module mocking conventions, plus isolated real TicketStore/file-backed tests for initialization, repair, and non-mutation. Reserve actual HTTP/digest checks for delivery TASK-5. Specify concrete paths (src/app/api/ready/route.ts, new test file, application README). All required readiness tests and the exact expected-failure manifest must be authored in the Tests stage and frozen before Implementation; remove wording suggesting adding more assertions to approved files incrementally during implementation. Additional implementation regression tests must be separate new files. Code inspection confirms getTicketStore assigns sharedStore only after new TicketStore returns successfully, so failed initialization is not cached today; record this fact and avoid speculative accessor changes. Existing summary() is a suitable ticket-table read with no new storage abstraction. Reconcile risks/validation/open questions with these verified facts; no Spec change or product-scope expansion is needed.",
-    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-    "specHash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
-    "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
-  },
+  "pending": null,
   "lastCommentId": 5863070163,
   "receipts": [
     {
