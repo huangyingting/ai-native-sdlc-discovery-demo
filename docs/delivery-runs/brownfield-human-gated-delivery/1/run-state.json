@@ -4,8 +4,8 @@
   "repository": "huangyingting/ai-native-sdlc-discovery-demo",
   "baseline": "40e17c9853be3655ba927142d1d8e916f262d924",
   "mode": "development-test",
-  "status": "active",
-  "lastCommentId": 0,
+  "status": "accepted",
+  "lastCommentId": 5862969905,
   "delivery": {
     "runId": "36374182779",
     "runAttempt": 2,
@@ -16,7 +16,21 @@
     "runUrl": "https://github.com/huangyingting/ai-native-sdlc-discovery-demo/actions/runs/36374182779",
     "verified": true,
     "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-    "acceptances": [],
+    "acceptances": [
+      {
+        "user": {
+          "id": 24954047,
+          "login": "huangyingting"
+        },
+        "commentId": 5862969905,
+        "commentBody": "/sdlc accept sha256:09bf8f338aaccaacb0290eafc6fe65c7f917cd8642688406aef93d24b0eb36a2\n\nAuthorized development-test acceptance executed through the local operator account. This is not independent Human review, customer validation, or Demo Ready certification.\n\nTested the actual GHCR digest above, published and verified by run 36374182779 attempt 2 from merge a2004d37bab5d4dbc758f3bdf9599547b4a45ad0.\n\n- AC-1: The actual 37-pass implementation suite exercised persisted old-schema SQLite rows, exact legacy values/timestamps, null ownership, original summary counts, and repeat migration. Separately, the local digest runner provisioned and read back all four exact baseline fixtures; the browser showed Unassigned and summary 2 open / 1 in progress / 1 resolved / 2 high priority. Fresh seeding is not presented as migration proof.\n- AC-2: Browser keyboard actions assigned INC-0001 to Avery Stone, reassigned it to Jordan Lee, and cleared it. Each state survived reload and a separate restart of the same exact container with the same volume, and appeared on both detail and queue. Read-only SQLite snapshots proved only owner and nondecreasing updated_at changed; all other rows and fields were unchanged. Approved tests independently prove assigned/unassigned no-ops perform no database write and cover future stored timestamps.\n- AC-3: With INC-0001/0003 assigned to Avery, INC-0002 to Jordan, and INC-0004 unassigned, actual browser form submissions returned exactly All={0001,0002,0003,0004}, Avery={0001,0003}, Jordan={0002}, Unassigned={0004}. Avery+open+high+inc-1 returned only 0001; Avery+critical returned none. Clearing only owner retained search/status/priority. Browser Back and Forward restored Avery and All owners without stale selection. Summary cards remained 2/1/1/2 throughout filtering.\n- AC-4: Labeled owner controls, keyboard selection, Tab to Save owner, and keyboard submission were exercised. Actual same-origin form POSTs with forged-owner and nonexistent ticket 999 returned HTTP 500; server logs showed Invalid ticket owner update and Ticket not found respectively. Before/after stored ticket snapshots were byte-identical. These responses follow the existing server-action exception convention, not a new custom validation UI.\n- AC-5: Used a separate fresh isolated container/volume, leaving the AC-3 dataset intact. Created Ownership demo request / Verify a new unassigned ticket. / Other / low / Demo Requester / demo.requester@example.com as INC-0005. It started open/unassigned with equal creation/update timestamps and no owner input on creation. Whitespace-normalized inc-5 search returned only 0005. Queue priority/date order was 0004,0001,0002,0005,0003. Updating its status to in_progress preserved owner and unrelated fields; summary changed from 3/1/1/2 to 2/2/1/2. All four original rows remained exactly unchanged.\n\nRequired Stage CI, application CI, and container smoke passed. Local tests, lint, typecheck, build, and editor diagnostics also passed. Approved contracts and test blobs were preserved.\n\nThe retained feature runtime is loopback-only at port 43128 with the original AC-3 data volume. The separate AC-5 test resources are disposable. No source-repository data or previous demo runtime was reset. Authentication, authorization, external identity, notifications, SLA, and business-impact measurements remain outside this increment. A subsequent maintenance assessment will use a linked new Intent rather than rewrite this sealed contract.\n",
+        "notes": "Authorized development-test acceptance executed through the local operator account. This is not independent Human review, customer validation, or Demo Ready certification.\n\nTested the actual GHCR digest above, published and verified by run 36374182779 attempt 2 from merge a2004d37bab5d4dbc758f3bdf9599547b4a45ad0.\n\n- AC-1: The actual 37-pass implementation suite exercised persisted old-schema SQLite rows, exact legacy values/timestamps, null ownership, original summary counts, and repeat migration. Separately, the local digest runner provisioned and read back all four exact baseline fixtures; the browser showed Unassigned and summary 2 open / 1 in progress / 1 resolved / 2 high priority. Fresh seeding is not presented as migration proof.\n- AC-2: Browser keyboard actions assigned INC-0001 to Avery Stone, reassigned it to Jordan Lee, and cleared it. Each state survived reload and a separate restart of the same exact container with the same volume, and appeared on both detail and queue. Read-only SQLite snapshots proved only owner and nondecreasing updated_at changed; all other rows and fields were unchanged. Approved tests independently prove assigned/unassigned no-ops perform no database write and cover future stored timestamps.\n- AC-3: With INC-0001/0003 assigned to Avery, INC-0002 to Jordan, and INC-0004 unassigned, actual browser form submissions returned exactly All={0001,0002,0003,0004}, Avery={0001,0003}, Jordan={0002}, Unassigned={0004}. Avery+open+high+inc-1 returned only 0001; Avery+critical returned none. Clearing only owner retained search/status/priority. Browser Back and Forward restored Avery and All owners without stale selection. Summary cards remained 2/1/1/2 throughout filtering.\n- AC-4: Labeled owner controls, keyboard selection, Tab to Save owner, and keyboard submission were exercised. Actual same-origin form POSTs with forged-owner and nonexistent ticket 999 returned HTTP 500; server logs showed Invalid ticket owner update and Ticket not found respectively. Before/after stored ticket snapshots were byte-identical. These responses follow the existing server-action exception convention, not a new custom validation UI.\n- AC-5: Used a separate fresh isolated container/volume, leaving the AC-3 dataset intact. Created Ownership demo request / Verify a new unassigned ticket. / Other / low / Demo Requester / demo.requester@example.com as INC-0005. It started open/unassigned with equal creation/update timestamps and no owner input on creation. Whitespace-normalized inc-5 search returned only 0005. Queue priority/date order was 0004,0001,0002,0005,0003. Updating its status to in_progress preserved owner and unrelated fields; summary changed from 3/1/1/2 to 2/2/1/2. All four original rows remained exactly unchanged.\n\nRequired Stage CI, application CI, and container smoke passed. Local tests, lint, typecheck, build, and editor diagnostics also passed. Approved contracts and test blobs were preserved.\n\nThe retained feature runtime is loopback-only at port 43128 with the original AC-3 data volume. The separate AC-5 test resources are disposable. No source-repository data or previous demo runtime was reset. Authentication, authorization, external identity, notifications, SLA, and business-impact measurements remain outside this increment. A subsequent maintenance assessment will use a linked new Intent rather than rewrite this sealed contract.",
+        "at": "2026-09-28T03:47:02Z",
+        "digest": "sha256:09bf8f338aaccaacb0290eafc6fe65c7f917cd8642688406aef93d24b0eb36a2",
+        "runId": "36374182779",
+        "runAttempt": 2
+      }
+    ],
     "rejection": null
   },
   "failure": null,
@@ -26,6 +40,18 @@
       "at": "2026-09-28T03:35:47.893Z",
       "runId": "36374182779",
       "runAttempt": 2
+    },
+    {
+      "type": "accept",
+      "at": "2026-09-28T03:47:02Z",
+      "commentId": 5862969905,
+      "actor": "huangyingting"
+    },
+    {
+      "type": "command-receipt",
+      "at": "2026-09-28T03:47:02Z",
+      "commentId": 5862969905,
+      "message": "Command #5862969905 recorded: accept."
     }
   ]
 }
