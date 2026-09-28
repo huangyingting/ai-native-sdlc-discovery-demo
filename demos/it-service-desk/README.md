@@ -54,6 +54,50 @@ For disposable local development only, deleting that file resets demo data.
 Do not reset a shared checkout for a presentation; use an isolated prepared
 copy as described below.
 
+## Local health checks
+
+`GET /api/health` is process liveness: it returns HTTP 200 with exactly
+`{"status":"ok"}` even if ticket storage is unavailable. `GET /api/ready`
+checks the existing ticket store with a ticket summary read on each request.
+It returns HTTP 200 with exactly `{"status":"ready"}` when storage works, or
+HTTP 503 with exactly `{"status":"unavailable"}` when initialization or the
+read fails. Both readiness responses include `Cache-Control: no-store`.
+
+From this directory, use separate terminals to start and probe a disposable
+healthy instance (the first probe may initialize and seed its database):
+
+```sh
+healthy_dir=$(mktemp -d)
+SERVICE_DESK_DB_PATH="$healthy_dir/service-desk.db" npm run dev
+```
+
+```sh
+curl -i http://localhost:3000/api/health
+curl -i http://localhost:3000/api/ready
+```
+
+Stop the healthy instance before starting this **separate**, fault-injected
+instance on port 3001. Never fault-inject or delete an accepted data volume:
+
+```sh
+SERVICE_DESK_DB_PATH=/dev/null/service-desk.db npm run dev -- -p 3001
+```
+
+```sh
+curl -i http://localhost:3001/api/health
+curl -i http://localhost:3001/api/ready
+```
+
+If readiness is unavailable, check protected application logs for the generic
+readiness-failure message and inspect the local database configuration and
+path privately; HTTP responses do not disclose failure details. Repair the
+underlying path or `SERVICE_DESK_DB_PATH`, restart the local process if its
+configuration changed, and probe `/api/ready` again. A repaired store can
+become ready on a later request without changing `/api/health`. Stop the
+instances and remove only the disposable healthy directory when finished.
+These checks demonstrate local behavior; they do not certify production
+availability.
+
 ## Validate
 
 ```powershell
