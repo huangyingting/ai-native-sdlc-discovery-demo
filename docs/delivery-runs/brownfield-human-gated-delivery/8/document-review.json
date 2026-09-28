@@ -12,21 +12,21 @@
     "body": "Delivery Execution: development-test\n\n## Maintenance feedback from an accepted delivery\n\nThis is a new, linked maintenance iteration after the accepted ownership delivery in https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/1, not a change to that sealed contract.\n\nDelivered baseline: `a2004d37bab5d4dbc758f3bdf9599547b4a45ad0`.\nAccepted image: `ghcr.io/huangyingting/ai-native-sdlc-discovery-demo-it-service-desk@sha256:09bf8f338aaccaacb0290eafc6fe65c7f917cd8642688406aef93d24b0eb36a2`.\n\n## Observed operational need\n\nOn 2026-09-28, an explicitly isolated disposable replica of that exact digest was started with `SERVICE_DESK_DB_PATH=/dev/null/service-desk.db` to simulate an unusable database path. No production incident is claimed, and no accepted data volume was attached or modified.\n\nActual observations:\n\n- `GET /api/health`: HTTP 200 with `{\"status\":\"ok\"}`.\n- `GET /`: HTTP 500; container logs identified database initialization failure (`EEXIST`).\n- `GET /api/ready`: HTTP 404 because no readiness endpoint exists.\n\nThe existing health route is a useful process-liveness signal, not a database-readiness guarantee. Operators need a separate signal before sending ticket traffic. The existing delivery verifier checks both health and dashboard; this observation does not mean that verifier incorrectly passed the broken replica.\n\n## Intended outcome and explicit choices\n\nPreserve `GET /api/health` exactly as the existing lightweight liveness endpoint: HTTP 200 and `{\"status\":\"ok\"}`, including when database initialization fails.\n\nAdd a separate Node.js `GET /api/ready` endpoint that performs a real database read through the existing TicketStore/application initialization path. A static success value or a standalone `SELECT 1` that does not exercise ticket storage is insufficient. Reuse existing storage/query behavior rather than introduce a second database implementation.\n\n- When ticket storage can initialize and answer the read, respond HTTP 200 with exactly `{\"status\":\"ready\"}`.\n- When that initialization/read throws, respond HTTP 503 with exactly `{\"status\":\"unavailable\"}` and explicitly log the readiness failure using a bounded generic message. Never expose database paths, ticket data, credentials, exception messages, or stack traces in the HTTP response.\n- Both readiness responses must include `Cache-Control: no-store`. Evaluate readiness on every request; do not prerender or cache a successful result.\n- Existing normal first-use schema migration/seeding may occur through the existing initialization path. Once initialized, repeated readiness probes must not mutate ticket fields, ownership, timestamps, or other persisted rows.\n- Preserve all ownership behavior, existing health behavior, create/status/search/filter semantics, and the previously approved tests and lifecycle records.\n\n## Acceptance evidence\n\nDemonstrate healthy readiness, a genuine thrown initialization/read failure producing the exact 503 response, failure logging and no-store headers, and recovery on a subsequent request rather than a cached failure/success. Show the legacy liveness response is unchanged.\n\nUse executable tests with meaningful assertion-level Red before implementation. For a new route that does not yet exist, keep tests compilable and fail an explicit test-body assertion about the missing behavior before any dynamic import; missing-module or collection errors are not acceptable Red. Additional regression tests may be added in new files; do not alter the approved ownership tests.\n\nAt delivery, run the published immutable image in a healthy isolated instance and a separately fault-injected instance. Observe healthy readiness=200, broken-database readiness=503, and liveness=200 in both. Verify that repeated readiness probes preserve a populated ownership dataset and that the dashboard remains usable on the healthy instance.\n\nUpdate the application runbook to distinguish liveness from readiness, show exact responses and local probe commands, explain safe failure diagnosis and configuration repair/restart, and document that this is a local demonstration rather than production availability certification.\n\n## Scope and non-goals\n\nThis maintenance increment is intentionally bounded to readiness, its tests, and directly related documentation. No new infrastructure, dependencies, authentication, metrics platform, alert service, external identities, business claims, or changes to the accepted ownership contract. Do not change shared delivery automation or overwrite previous run artifacts. Do not claim an outage, customer impact, SLO, or independent Human validation.\n\nAlternatives considered: keep only the current liveness endpoint and ask operators to check the dashboard manually, or change `/api/health` into readiness and risk changing its established semantics. The chosen separate endpoint preserves compatibility and makes the distinction explicit.\n\n## Open questions\n\nNo product decision is intentionally left unresolved above. If code inspection reveals a consequential contradiction or feasibility problem, raise it during discovery; do not silently change these explicit choices.\n"
   },
   "counters": {
-    "spec": 0,
+    "spec": 1,
     "plan": 0
   },
   "documents": {
-    "spec": null,
+    "spec": {
+      "version": 1,
+      "hash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
+      "specHash": null,
+      "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+      "approvals": [],
+      "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+    },
     "plan": null
   },
-  "pending": {
-    "stage": "spec",
-    "version": 1,
-    "feedback": "Initial draft. Use the Human Intent and discussion; expose unresolved decisions.",
-    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-    "specHash": null,
-    "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
-  },
+  "pending": null,
   "lastCommentId": 0,
   "receipts": [],
   "sealed": false
