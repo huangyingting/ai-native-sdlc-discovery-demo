@@ -6,6 +6,11 @@ This page is the setup, policy, and implementation reference.
 The [illustrated case study](./brownfield-human-gated-delivery-case-study.md)
 connects that design to a real development-test execution, including screenshots,
 review iterations, operational failures, and immutable evidence links.
+For this repository's later execution, use the canonical
+[discovery-to-maintenance report](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md).
+It includes actual discovery decisions, failed maintenance with preserved
+contracts, and the accepted continuation; the illustrated case above is a
+different earlier run.
 For the limits of the current Intent/Spec/Plan experience and a proposed
 decision-centered evolution, see the
 [early-stage research and improvement design](./ai-native-sdlc-early-stage-research.md).
