@@ -2,13 +2,13 @@
 
 ## Intent
 
-Enable support agents and team leads to see, manage, and filter by ticket ownership in the existing SQLite-backed IT service desk. Ownership must be visible in the ticket queue and ticket detail, support post-triage handoff from ticket detail, and persist after restarting the application with the same database volume.
+Enable support agents and team leads to see, manage, and filter ticket ownership in the existing SQLite-backed IT service desk.
 
-Ownership is optional. Existing and newly created tickets start unassigned. Users can assign, reassign, and clear ownership from ticket detail using only the fixed local roster: Avery Stone (`avery-stone`) and Jordan Lee (`jordan-lee`), plus Unassigned. The creation form remains unchanged and does not request or accept an owner.
+Ownership is optional. Existing and newly created tickets start unassigned. After triage, users can assign, reassign, or clear ownership from ticket detail using the fixed local roster of Avery Stone (`avery-stone`) and Jordan Lee (`jordan-lee`). The ticket creation form remains unchanged and does not request or accept ownership.
 
-The queue must provide an owner filter with All owners, Unassigned, Avery Stone, and Jordan Lee. The owner filter intersects with existing search, status, and priority filters without changing summary-card calculations or leaving a stale owner selection after navigation.
+Ownership must be visible in the queue and ticket detail. The queue must support an owner filter that intersects with the existing search, status, and priority filters. Ownership changes must persist when the application restarts with the same database volume.
 
-The existing application currently stores no owner field. It creates tickets with an `open` status, supports status updates, searches by title, requester, reference, or numeric identifier, combines search with status and priority filters, and derives summary counts from ticket status and priority. These behaviors must remain compatible.
+The application currently creates tickets with an `open` status, supports status updates, searches by title, requester, reference, or numeric identifier, combines search with status and priority filters, and calculates summary counts from ticket status and priority. These behaviors must remain compatible.
 
 ## Discovery
 
@@ -16,7 +16,7 @@ The existing application currently stores no owner field. It creates tickets wit
 {
   "problem": "Support agents and team leads using the IT service desk cannot see who is responsible for a ticket or identify assigned and unassigned work in the queue, making ownership during handoff unclear.",
   "evidence": "The existing SQLite-backed demonstration application has no owner field in its ticket model, database schema, creation workflow, queue, or ticket detail. This source baseline demonstrates the missing capability. Customer interviews, measured business baselines, verified productivity claims, and evidence from completed live scenarios are missing.",
-  "successMeasure": "Observable success means existing and newly created tickets begin unassigned; ownership can be assigned, reassigned, and cleared from ticket detail using the fixed local roster; ownership is visible on the queue and detail; the owner filter produces the specified exact fixture result sets while intersecting with existing criteria; valid changes persist after restarting with the same database volume; invalid input leaves every stored row unchanged; no-op submissions do not write; summary cards remain unfiltered; and existing ticket data and workflows remain compatible. No business-metric baseline or target is available.",
+  "successMeasure": "Observable success means a real old-schema database migrates without changing persisted ticket data or initial summary counts; existing and newly created tickets begin unassigned; ownership can be assigned, reassigned, and cleared from ticket detail using the fixed local roster; ownership is visible in the queue and detail; the owner filter produces the specified exact fixture result sets while intersecting with existing criteria; valid changes persist after restarting with the same database volume; invalid input leaves every stored row unchanged; no-op submissions do not write; summary cards remain unfiltered; and existing ticket workflows remain compatible. No business-metric baseline or target is available.",
   "alternatives": "Do nothing and retain the current handoff process, which avoids migration risk but leaves responsibility invisible. Add ownership display and detail-based handoff without filtering, which is a smaller change but does not support finding work by owner. Add display, handoff, and the agreed intersecting owner filter, which supports queue discovery but adds UI and query complexity.",
   "questions": [
     {
@@ -49,7 +49,7 @@ The existing application currently stores no owner field. It creates tickets wit
         "AC-2",
         "AC-5"
       ],
-      "explanation": "AC-1 requires migration to leave existing tickets unassigned without changing their existing data or timestamps; AC-2 requires assignment, reassignment, and clearing from ticket detail; AC-5 requires newly created tickets to start unassigned without adding ownership to the creation form."
+      "explanation": "AC-1 requires existing tickets to migrate as unassigned without changing their existing values or timestamps; AC-2 permits assignment, reassignment, and clearing from ticket detail; AC-5 requires newly created tickets to remain unassigned without adding ownership to creation."
     },
     {
       "questionId": "Q-2",
@@ -58,7 +58,7 @@ The existing application currently stores no owner field. It creates tickets wit
         "AC-2",
         "AC-4"
       ],
-      "explanation": "AC-2 limits assignment to Avery Stone and Jordan Lee, normalizes empty ownership input to null, makes an already-current owner a write-free successful no-op, and constrains real changes to ownership plus a nondecreasing updatedAt. AC-4 requires forged nonempty owner values and nonexistent ticket identifiers to produce explicit errors without mutating any row."
+      "explanation": "AC-2 limits assignment to Avery Stone and Jordan Lee, normalizes empty input to null, makes an already-current owner a write-free successful no-op, and restricts real changes to ownership plus a nondecreasing updatedAt. AC-4 rejects forged nonempty owner values and nonexistent ticket identifiers without mutating data."
     },
     {
       "questionId": "Q-3",
@@ -66,7 +66,15 @@ The existing application currently stores no owner field. It creates tickets wit
       "acceptanceIds": [
         "AC-3"
       ],
-      "explanation": "AC-3 now requires the owner filter, its four selections, exact fixture result sets, conjunctive interaction with search, status, and priority, preservation of other criteria when only owner is cleared, unfiltered summary cards, and no stale owner selection after navigation."
+      "explanation": "AC-3 requires the four-option owner filter, exact fixture result sets, conjunctive filtering, preservation of other criteria when ownership is cleared, unfiltered summary cards, and prevention of stale owner selections after navigation."
+    },
+    {
+      "questionId": "Q-4",
+      "commentId": 5862300128,
+      "acceptanceIds": [
+        "AC-1"
+      ],
+      "explanation": "AC-1 makes the mandatory-ownership branch inapplicable, requires existing rows to migrate to null without a default owner or attribution mapping, preserves every pre-existing field and timestamp and the initial fixture summary counts, and requires migration coverage using a persisted old-schema database rather than fresh seeding."
     }
   ]
 }
@@ -74,33 +82,36 @@ The existing application currently stores no owner field. It creates tickets wit
 
 ## Scope
 
-- Add optional, persisted ownership data to tickets without changing existing ticket identifiers, field values, or timestamps during migration.
-- Migrate every existing ticket to an unassigned ownership state without fabricating attribution.
-- Keep newly created tickets unassigned and leave the creation form free of ownership controls.
-- Display Avery Stone, Jordan Lee, or a clear Unassigned state in the ticket queue and ticket detail.
-- Allow assignment, reassignment, and clearing from ticket detail through labeled, keyboard-usable controls.
+- Add optional, persisted ownership to tickets.
+- Migrate a real old-schema SQLite database so every existing ticket receives null ownership and displays as Unassigned.
+- Preserve every pre-existing ticket identifier, field value, and timestamp exactly during migration.
+- Preserve all four fixed scenario fixtures and their initial summary counts during migration.
+- Keep newly created tickets unassigned and omit ownership controls from ticket creation.
+- Display Avery Stone, Jordan Lee, or Unassigned in the queue and ticket detail.
+- Permit assignment, reassignment, and clearing from ticket detail through labeled, keyboard-usable controls.
 - Restrict nonempty ownership values to `avery-stone` and `jordan-lee`.
 - Normalize empty ownership form input to database null.
-- Treat selection of the already-current owner, including the current unassigned state, as a successful no-op that performs no write and preserves `updatedAt`.
+- Treat an already-current normalized owner as a successful, write-free no-op that preserves `updatedAt`.
 - For a real ownership change, update only ownership and a nondecreasing `updatedAt`.
+- Persist ownership changes across application restarts using the same database volume.
 - Add an owner filter containing All owners, Unassigned, Avery Stone, and Jordan Lee.
-- Intersect the owner filter with existing search, status, and priority criteria.
-- Preserve active search, status, and priority selections when only the owner filter is cleared.
-- Keep summary cards independent of queue filters, including the owner filter.
-- Prevent navigation from displaying an owner selection that is stale relative to the active queue criteria.
-- Persist real ownership changes in SQLite so they remain visible after restarting with the same database volume.
+- Intersect owner filtering with existing search, status, and priority criteria.
+- Preserve active search, status, and priority criteria when only the owner filter is cleared.
+- Keep summary cards independent of queue filters.
 - Return explicit errors for forged nonempty owner values and nonexistent ticket identifiers without mutating any row.
 - Preserve existing creation, status-update, search, filtering, summary, queue, and ticket-detail behavior except for the specified ownership additions.
 
 ## Non-goals
 
-- Requiring an owner during ticket creation or adding ownership controls to the creation form.
+- Requiring ownership during ticket creation.
+- Adding ownership controls to the creation form.
+- Assigning a default owner or deriving attribution for migrated tickets.
 - Free-text owner names or owners outside the fixed local roster.
 - Authentication, authorization, or role-based ownership permissions.
-- External identity providers, directory synchronization, or remote roster management.
-- Notifications, subscriptions, escalation rules, or service-level agreements.
+- External identity integration or remote roster management.
+- Notifications, subscriptions, escalations, or service-level agreements.
 - Bulk assignment or bulk reassignment.
-- Free-text audit history or a general ticket event log.
+- Free-text audit history or a general event log.
 - Filtering or recalculating summary cards according to queue filters.
 - New dashboards or unrelated reporting.
 - Claims about customer demand, productivity, return on investment, or completed live-scenario validation.
@@ -108,71 +119,76 @@ The existing application currently stores no owner field. It creates tickets wit
 
 ## Actors
 
-- **Support agent:** Views ownership in the queue and ticket detail, filters tickets by owner, and assigns, reassigns, or clears ownership after triage.
+- **Support agent:** Views ownership, filters the queue by owner, and assigns, reassigns, or clears ownership after triage.
 - **Team lead:** Uses ownership visibility and filtering to identify work assigned to each roster member or left unassigned.
-- **Ticket requester:** Continues to submit tickets through the existing creation workflow without selecting an owner.
+- **Ticket requester:** Continues to create tickets without choosing an owner.
 - **Roster member:** Avery Stone (`avery-stone`) or Jordan Lee (`jordan-lee`), the only permitted nonempty ownership identities.
-- **Existing ticket data:** Must remain readable, retain all pre-existing identifiers, values, and timestamps, and begin unassigned after migration.
-- **Application and SQLite database:** Validate and persist ownership changes, reject invalid requests without mutating rows, avoid writes for no-op ownership submissions, apply intersecting queue criteria, and return consistent ticket data after restart.
+- **Existing ticket data:** Must remain readable and retain every pre-existing identifier, value, and timestamp while gaining null ownership during migration.
+- **Application and SQLite database:** Validate and persist ownership, reject invalid requests without mutation, avoid writes for no-op submissions, apply intersecting queue filters, and preserve data across restart.
 
-Authentication and authorization are out of scope, so support agents and team leads have no different technical permissions in this specification.
+Authentication and authorization are out of scope, so support agents and team leads have no distinct technical permissions in this specification.
 
 ## Constraints
 
-- This is a focused brownfield extension of the existing IT service desk.
-- Ownership is nullable: existing and newly created tickets start unassigned, and an assigned ticket may be returned to Unassigned.
-- Ownership changes occur on ticket detail, not on the creation form.
+- This must remain a focused brownfield extension of the existing application.
+- Ownership is nullable. Existing and newly created tickets start unassigned, and assigned tickets may be returned to Unassigned.
+- Ownership changes occur only from ticket detail, not from ticket creation.
 - The only valid nonempty owner identifiers are `avery-stone` and `jordan-lee`.
 - Empty ownership form input must normalize to database null.
-- Existing ticket identifiers, titles, descriptions, categories, priorities, statuses, requester information, creation timestamps, and update timestamps must not be rewritten during migration.
+- Migration must use null ownership; it must not assign a default owner or apply an attribution mapping.
+- Migration verification must use a real old-schema database containing persisted rows, not only a newly seeded database using the new schema.
+- Migration must preserve every pre-existing ticket field and timestamp exactly.
+- Migration must preserve the four fixed scenario fixtures and their initial summary counts.
 - Existing ticket creation must continue to produce an `open` ticket using the current identifier, default-value, and timestamp behavior.
-- Existing status updates, summary calculations, queue ordering, reference formatting, and search by title, requester, reference, or numeric identifier must remain compatible.
-- Ownership controls must have programmatically associated labels, expose their current value, and be operable by keyboard.
-- Client-provided ownership values are not trusted; roster validation must also occur at the server or storage boundary.
-- A forged nonempty owner value or nonexistent ticket identifier must produce an explicit error and must not mutate the targeted row or any other row.
-- Submitting an ownership value equal to the current normalized ownership state must succeed without a database write and must preserve `updatedAt`.
-- A real ownership change must modify only ownership and a nondecreasing `updatedAt`; all other ticket fields must remain unchanged.
-- A real ownership change must survive application restart when the same database volume is reused.
+- Existing status updates, queue ordering, reference formatting, summary calculations, and search by title, requester, reference, or numeric identifier must remain compatible.
+- Ownership controls must have programmatically associated labels, expose their current values, and be keyboard operable.
+- Client-provided owner values are untrusted and must be validated at the server or storage boundary.
+- A forged nonempty owner or nonexistent ticket identifier must produce an explicit error without mutating the targeted row or any other row.
+- Submitting the current normalized ownership state must succeed without a database write and preserve `updatedAt`.
+- A real ownership change may modify only ownership and a nondecreasing `updatedAt`.
+- A real ownership change must survive restart when the same database volume is reused.
 - The owner filter must contain exactly All owners, Unassigned, Avery Stone, and Jordan Lee.
-- All owners applies no ownership restriction. Each other owner selection returns only tickets in the selected ownership state.
-- Owner, search, status, and priority criteria combine conjunctively, returning all and only tickets satisfying every active criterion.
-- Clearing only the owner criterion sets it to All owners while preserving active search, status, and priority selections.
-- Summary cards retain their existing unfiltered behavior regardless of active owner, search, status, or priority criteria.
-- Navigation must not display an owner selection that does not represent the active owner criterion.
-- Candidate fixtures, checklists, scripted rehearsal statements, successful validation, prior approval commands, and AI comments do not constitute approval of this revision.
+- All owners imposes no ownership restriction; each other selection returns only tickets in that ownership state.
+- Owner, search, status, and priority criteria combine conjunctively.
+- Clearing only ownership must set the owner filter to All owners while preserving the other active criteria.
+- Summary cards must retain their existing unfiltered behavior.
+- Navigation must not display an owner selection that differs from the active owner criterion.
+- Candidate fixtures, checklists, scripted rehearsal statements, validation results, earlier approval commands, and AI comments do not approve this specification.
 
 ## Acceptance scenarios
 
 ### AC-1: Migrate existing tickets without data loss
 
-**Given** an existing SQLite database containing tickets created before ownership support  
-**When** the application upgrades the database and loads those tickets  
-**Then** every existing ticket has ownership stored as null and is displayed as Unassigned  
-**And** every ticket retains its identifier, title, description, category, priority, status, requester information, creation timestamp, and update timestamp exactly  
-**And** migration does not assign a roster member or alter existing summary, queue, detail, search, status, or priority behavior.
+**Given** a real old-schema SQLite database contains persisted ticket rows, including the four fixed scenario fixtures and their existing initial summary counts  
+**When** the application upgrades and loads that database  
+**Then** every existing ticket has ownership stored as null and displays as Unassigned  
+**And** no default owner or attribution mapping is applied  
+**And** every pre-existing identifier, field value, creation timestamp, and update timestamp remains exactly unchanged  
+**And** all four fixtures and their initial summary counts remain unchanged  
+**And** existing queue, detail, search, status, priority, and summary behavior remains compatible.
 
 ### AC-2: Assign, reassign, clear, and repeat ownership on ticket detail
 
 **Given** an unassigned ticket is open on its ticket-detail page  
-**When** a user selects Avery Stone or Jordan Lee and saves the change  
-**Then** the selected roster member is displayed on both the ticket detail and queue  
+**When** a user selects Avery Stone or Jordan Lee and saves  
+**Then** the selected owner appears on the ticket detail and queue  
 **And** only ownership and a nondecreasing `updatedAt` may change  
-**And** the owner remains displayed after restarting the application with the same database volume.
+**And** the assignment remains after restarting with the same database volume.
 
 **Given** a ticket is assigned to one roster member  
-**When** a user selects the other roster member and saves the change  
+**When** a user selects the other roster member and saves  
 **Then** the new owner replaces the previous owner on the ticket detail and queue  
 **And** only ownership and a nondecreasing `updatedAt` may change  
 **And** the reassignment remains after restart.
 
 **Given** a ticket is assigned to Avery Stone or Jordan Lee  
 **When** a user selects Unassigned or submits empty ownership form input  
-**Then** ownership is stored as database null and displayed as Unassigned on the ticket detail and queue  
+**Then** ownership is stored as database null and displays as Unassigned  
 **And** only ownership and a nondecreasing `updatedAt` may change  
 **And** the unassigned state remains after restart.
 
 **Given** a ticket has a current normalized ownership state  
-**When** a user saves that same owner, or submits empty ownership input while the ticket is already unassigned  
+**When** a user saves the same owner, or submits empty input while the ticket is already unassigned  
 **Then** the request succeeds as a no-op  
 **And** no database write occurs  
 **And** `updatedAt` and every ticket field remain unchanged.
@@ -195,12 +211,12 @@ Authentication and authorization are out of scope, so support agents and team le
 **When** the owner filter is set to Unassigned  
 **Then** the queue returns exactly `INC-0004`.
 
-**Given** the same fixtures, `INC-0001` matches status `open`, priority `high`, and search text `inc-1`  
+**Given** `INC-0001` matches status `open`, priority `high`, and search text `inc-1`  
 **When** Avery Stone, `open`, `high`, and `inc-1` are selected together  
 **Then** the queue returns only `INC-0001`  
-**And** every returned ticket satisfies every active owner, search, status, and priority criterion.
+**And** every result satisfies every active criterion.
 
-**Given** the same fixtures and no Avery Stone ticket has critical priority  
+**Given** no Avery Stone ticket has critical priority  
 **When** Avery Stone and `critical` are selected together  
 **Then** the queue returns no tickets.
 
@@ -212,10 +228,10 @@ Authentication and authorization are out of scope, so support agents and team le
 
 **Given** queue filters are active  
 **When** the application displays the summary cards  
-**Then** the summary cards retain their existing unfiltered counts.
+**Then** the cards retain their existing unfiltered counts.
 
 **Given** navigation changes or restores the active queue criteria  
-**When** the queue and its controls are displayed  
+**When** the queue controls are displayed  
 **Then** the owner control represents the active owner criterion  
 **And** it does not display a stale owner selection.
 
@@ -223,13 +239,13 @@ Authentication and authorization are out of scope, so support agents and team le
 
 **Given** the ownership control is displayed on ticket detail  
 **When** a keyboard user navigates to and operates it  
-**Then** the control has a programmatically associated label, exposes the current ownership value, and supports assignment, reassignment, and clearing without pointer input.
+**Then** it has a programmatically associated label, exposes the current ownership value, and supports assignment, reassignment, and clearing without pointer input.
 
 **Given** the owner filter is displayed in the queue  
 **When** a keyboard user navigates to and operates it  
-**Then** the control has a programmatically associated label, exposes its current selection, and permits selection of All owners, Unassigned, Avery Stone, and Jordan Lee without pointer input.
+**Then** it has a programmatically associated label, exposes its current selection, and permits selection of All owners, Unassigned, Avery Stone, and Jordan Lee without pointer input.
 
-**Given** an ownership request supplies a forged nonempty owner value other than `avery-stone` or `jordan-lee`  
+**Given** an ownership request supplies a forged nonempty value other than `avery-stone` or `jordan-lee`  
 **When** the application processes the request  
 **Then** it returns an explicit invalid-owner error  
 **And** no ticket row or other database row is mutated.
@@ -244,28 +260,24 @@ Authentication and authorization are out of scope, so support agents and team le
 **Given** a user supplies the fields required by the existing ticket-creation workflow  
 **When** the user creates a ticket  
 **Then** the ticket is created with its existing identifier, `open` status, default values, and timestamp behavior  
-**And** ownership is stored as null and displayed as Unassigned  
+**And** ownership is stored as null and displays as Unassigned  
 **And** the creation form does not request or accept an owner.
 
 **Given** an existing ticket is assigned to Avery Stone, assigned to Jordan Lee, or unassigned  
 **When** a user performs a previously supported status update  
 **Then** the status update behaves as before  
-**And** ownership, the ticket identifier, and all fields unrelated to the status workflow remain unchanged  
+**And** ownership, the ticket identifier, and fields unrelated to the status workflow remain unchanged  
 **And** timestamps change only as already required by the existing status workflow.
 
 ## Revision summary
 
-This revision incorporates the recorded Q-3 outcome while preserving the previously incorporated Q-1 and Q-2 outcomes.
+This revision incorporates the recorded Q-4 outcome while retaining the Q-1, Q-2, and Q-3 requirements and stable AC-1 through AC-5 identifiers.
 
-AC-3 no longer presents filtering and display-only behavior as alternatives. It now requires an owner filter with All owners, Unassigned, Avery Stone, and Jordan Lee; exact result sets for `INC-0001` through `INC-0004`; conjunctive interaction with existing search, status, and priority criteria; preservation of those criteria when only owner is cleared; unfiltered summary cards; and protection against stale owner selections after navigation. Related scope and constraints have been made unconditional.
+AC-1 now explicitly requires migration verification against a real old-schema database containing persisted rows rather than relying on fresh seeding. It confirms that the mandatory-ownership branch does not apply, prohibits default ownership and attribution mapping, requires null/Unassigned ownership for migrated tickets, and preserves every pre-existing field, timestamp, fixed fixture, and initial summary count.
 
-Ownership otherwise remains optional and limited to the fixed local roster. Existing and newly created tickets start unassigned, assignment occurs after triage on ticket detail, no-op ownership submissions remain write-free, and invalid ownership requests must not mutate data.
-
-Q-4 is retained unchanged because registered questions cannot be silently removed. Its mandatory-ownership premise is incompatible with the recorded optional-ownership policy and is inapplicable to the currently specified behavior, but it still requires an explicit decision or deferment before this specification can be approved. This revised specification itself has not been approved.
+The alternatives recorded in the Discovery question register remain historical options, not current requirements. The recorded outcomes establish optional ownership, the fixed roster, detail-based handoff, and intersecting owner filtering. This revised specification still requires Human inspection and explicit approval; earlier approval commands, decisions, checklists, AI comments, or validation do not approve this version.
 
 ## Open questions
 
-- **Q-4:** If every ticket must have an owner, how should existing ownerless tickets be handled during migration? The recorded optional-ownership policy makes this conditional branch inapplicable to the current proposed behavior, but the registered question remains unanswered and requires an explicit decision or deferment.
-
-There are no recorded deferments. Q-4 remains blocking, and the Human must inspect the specification again after its disposition before explicitly approving a version.
+None. Q-1 through Q-4 have recorded decisions, and there are no recorded deferments or newly discovered consequential conflicts. This revised specification remains unapproved until the Human inspects and explicitly approves this version.
 
