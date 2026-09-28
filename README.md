@@ -6,11 +6,23 @@ maintenance iteration. It was prepared from the ownership-free
 [source](https://github.com/huangyingting/ai-native-sdlc) at
 `80cb3c30588754e39fcab792aefe89cad7d1ce85`.
 
-The rehearsal is in progress. Scripted actions use the repository owner's
-explicit authorization; they are not independent Human review, genuine Human
-acceptance, or evidence of three completed live rehearsals. The linked
-ownership case study below describes an earlier, separate run, not this one.
-Do not reset the old demo or present its evidence as results from this run.
+The rehearsal is complete: [ownership Intent #1](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/1) and
+[maintenance continuation #17](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/17) were delivered and accepted
+against actual immutable images. [Maintenance attempt #8](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/8) was
+cancelled after real Green failures; its frozen evidence was preserved rather
+than rewritten. The final application includes ownership and database readiness.
+
+Start with the source repository's canonical
+**[discovery-to-maintenance report](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md)**,
+including its
+[ordered presentation and reproduction steps](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md#8-present-or-reproduce-the-result).
+It records the real decisions, failures, corrections, CI, image digests, runtime
+observations, and acceptance links rather than duplicating evidence here.
+
+Scripted actions used the repository owner's explicit authorization. They are
+not independent Human review, genuine Human acceptance, or evidence of three
+completed Human-led rehearsals. The illustrated ownership case study below
+describes an earlier, separate run. Do not reset either completed demo.
 
 Demonstrations and tooling for exploring AI-native software delivery with
 GitHub Copilot CLI, dynamic agent orchestration, OpenTelemetry traces, and
@@ -20,7 +32,8 @@ Issue-to-PR workflows.
 
 | What you want to do | Where to begin |
 |---|---|
-| Understand or present the completed ownership demo | [Illustrated case study](docs/brownfield-human-gated-delivery-case-study.md), then its [presentation and reproduction steps](docs/brownfield-human-gated-delivery-case-study.md#7-how-to-present-or-reproduce-the-result) |
+| Present this completed discovery and maintenance run | [Actual evidence and ordered presentation steps](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md#8-present-or-reproduce-the-result) |
+| Inspect the earlier separate ownership demo | [Illustrated case study](docs/brownfield-human-gated-delivery-case-study.md) |
 | Run a new AI-native delivery cycle | **[Step-by-step walkthrough: start with preparation](docs/brownfield-human-gated-delivery-walkthrough.md#1-prepare-the-repository)** |
 | Understand Intent/Spec/Plan gaps and improvements | [Early-stage research and implementation status](docs/ai-native-sdlc-early-stage-research.md) |
 | Run only the service-desk application | [Application quick start](demos/it-service-desk/README.md) |
@@ -30,6 +43,8 @@ For a fresh ownership run, use the ownership-free **source** to prepare a
 **new isolated repository**. The existing
 [completed demo](https://github.com/huangyingting/ai-native-sdlc-demo) already
 has ownership; use it for inspection or replay, not as a fresh baseline.
+This repository also already has ownership and readiness; do not use it as the
+ownership-free source for another initial ownership run.
 The walkthrough is the main path. The [toolkit README](tools/brownfield-demo/README.md)
 and [setup reference](docs/brownfield-human-gated-delivery.md) provide command
 details and troubleshooting when that path links to them.
@@ -45,6 +60,27 @@ details and troubleshooting when that path links to them.
   replay from real delivery evidence.
 - [`.github/`](.github/) — issue forms, workflow automation, and publishing
   adapters.
+
+## Final verified delivery
+
+- [Implementation PR #23](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/pull/23), protected merge
+  `d361ce032b0f729f62b165c23c4f79bb56f29b92`.
+- [Publish/verify attempt 2](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/actions/runs/36381916918/attempts/2).
+- [Actual digest-bound acceptance](https://github.com/huangyingting/ai-native-sdlc-discovery-demo/issues/17#issuecomment-5864107648).
+- 50 application tests, lint, build, and real container smoke passed.
+- Healthy readiness 200, fault-injected readiness 503, liveness 200 in both,
+  and repaired readiness 200 were observed against the same digest.
+- Fifty real readiness probes and a same-volume restart preserved every field
+  of the populated four-ticket dataset.
+
+```text
+ghcr.io/huangyingting/ai-native-sdlc-discovery-demo-it-service-desk@sha256:1fab5706994daec051dbd183ea42a23ab0e74e2caeefeef1e48454fe17aaa5bb
+```
+
+The [application runbook](demos/it-service-desk/README.md#liveness-and-database-readiness)
+explains endpoint contracts and safe local repair. Read-only replay records
+trusted `runtimeStatus: accepted`; `acceptance.complete: false` intentionally
+excludes this development-test execution from genuine Human/Demo Ready claims.
 
 ## Validate
 
@@ -131,6 +167,9 @@ acceptance or the three-live-run readiness gate.
 
 ## Documentation
 
+- [This repository's discovery-to-maintenance report](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md)
+  — completed real execution, including failed maintenance and its accepted
+  continuation; maintained canonically in the ownership-free source.
 - [Intent, Spec, and Plan research](docs/ai-native-sdlc-early-stage-research.md)
   — ten early-stage pain points, evidence-based demo coverage, the implemented
   discovery/decision slice, and the remaining proposed improvements.

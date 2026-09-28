@@ -7,6 +7,10 @@ toolkit can present it locally without creating a hosted deployment.
 
 ## Start here
 
+- **Present this repository's completed result:** use the
+  [discovery-to-maintenance report and ordered steps](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md#8-present-or-reproduce-the-result).
+  Ownership and the maintenance continuation are accepted development-test
+  deliveries; the failed maintenance attempt remains visible as negative evidence.
 - **Inspect or present the existing result:** use the
   [ticket-ownership case study](./brownfield-human-gated-delivery-case-study.md)
   and its [reproduction steps](./brownfield-human-gated-delivery-case-study.md#7-how-to-present-or-reproduce-the-result).
@@ -19,7 +23,8 @@ toolkit can present it locally without creating a hosted deployment.
   stage. For an interrupted run, use [run controls](#run-controls-during-presentation)
   and [troubleshooting](#troubleshooting-during-the-demo), not a new setup.
 
-Do not reset the completed `ai-native-sdlc-demo` repository or submit the same
+Do not reset the completed `ai-native-sdlc-demo` or `ai-native-sdlc-discovery-demo`
+repositories or submit the same
 ownership request against its already-implemented application. Prepare a new
 isolated repository from the ownership-free source instead.
 

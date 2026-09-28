@@ -4,8 +4,14 @@ Assessment date: 2026-09-28.
 
 **Status:** the research below is a dated baseline assessment. The first
 discovery/decision slice is now implemented in source for newly initialized
-`decisions-v1` runs; the remaining roadmap is still proposed. This does not
-claim remote deployment, a live rehearsal, or improved review effectiveness.
+`decisions-v1` runs; the remaining roadmap is still proposed. The subsequent
+[discovery-to-maintenance report](https://github.com/huangyingting/ai-native-sdlc/blob/main/docs/brownfield-discovery-maintenance-rehearsal.md)
+records actual execution in this repository: four discovery decisions,
+accepted ownership, failed/cancelled maintenance, corrected continuation,
+and actual immutable-image acceptance. This is authorized `development-test`,
+not independent Human review or measured review effectiveness. The coverage
+table below remains the original dated assessment, not an updated capability
+score.
 The current operator instructions remain the
 [walkthrough](./brownfield-human-gated-delivery-walkthrough.md) and
 [delivery reference](./brownfield-human-gated-delivery.md).
