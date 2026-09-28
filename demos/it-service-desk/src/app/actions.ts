@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getTicketStore } from "@/lib/ticket-store";
-import { createTicketSchema, updateTicketStatusSchema } from "@/lib/ticket";
+import { createTicketSchema, updateTicketOwnerSchema, updateTicketStatusSchema } from "@/lib/ticket";
 
 export type TicketFormState = {
   errors?: Record<string, string[] | undefined>;
@@ -45,6 +45,19 @@ export async function updateTicketStatusAction(formData: FormData) {
   const updated = getTicketStore().updateStatus(result.data.id, result.data.status);
   if (!updated) throw new Error("Ticket not found.");
 
+  revalidatePath("/");
+  revalidatePath(`/tickets/${result.data.id}`);
+  redirect(`/tickets/${result.data.id}`);
+}
+
+export async function updateTicketOwnerAction(formData: FormData) {
+  const result = updateTicketOwnerSchema.safeParse({
+    id: formData.get("id"),
+    owner: formData.get("owner"),
+  });
+  if (!result.success) throw new Error("Invalid ticket owner update.");
+
+  getTicketStore().updateOwner(result.data.id, result.data.owner);
   revalidatePath("/");
   revalidatePath(`/tickets/${result.data.id}`);
   redirect(`/tickets/${result.data.id}`);

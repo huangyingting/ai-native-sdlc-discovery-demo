@@ -2,6 +2,10 @@ import { z } from "zod";
 
 export const ticketStatuses = ["open", "in_progress", "resolved", "closed"] as const;
 export const ticketPriorities = ["low", "medium", "high", "critical"] as const;
+export const ticketOwners = [
+  { value: "avery-stone", label: "Avery Stone" },
+  { value: "jordan-lee", label: "Jordan Lee" },
+] as const;
 export const ticketCategories = [
   "Access and identity",
   "Business applications",
@@ -13,6 +17,7 @@ export const ticketCategories = [
 
 export type TicketStatus = (typeof ticketStatuses)[number];
 export type TicketPriority = (typeof ticketPriorities)[number];
+export type TicketOwner = (typeof ticketOwners)[number]["value"];
 export type TicketCategory = (typeof ticketCategories)[number];
 
 export type Ticket = {
@@ -23,6 +28,7 @@ export type Ticket = {
   category: TicketCategory;
   priority: TicketPriority;
   status: TicketStatus;
+  owner: TicketOwner | null;
   requesterName: string;
   requesterEmail: string;
   createdAt: string;
@@ -50,7 +56,22 @@ export const updateTicketStatusSchema = z.object({
   status: z.enum(ticketStatuses),
 });
 
+export const ticketOwnerSchema = z.union([
+  z.enum(["avery-stone", "jordan-lee"]),
+  z.literal(""),
+  z.null(),
+]).transform((owner) => owner || null);
+
+export const updateTicketOwnerSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  owner: ticketOwnerSchema,
+});
+
 export type CreateTicketInput = z.infer<typeof createTicketSchema>;
+
+export function formatTicketOwner(owner: TicketOwner | null) {
+  return ticketOwners.find((entry) => entry.value === owner)?.label ?? "Unassigned";
+}
 
 export function formatTicketReference(id: number) {
   return `INC-${String(id).padStart(4, "0")}`;
