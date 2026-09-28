@@ -43,17 +43,35 @@
       "hash": "e2bef6eda1b32ae606f41d634a693523e899dd445e18a01f4a4816fb089a60f5",
       "specHash": "dc1c704edd16ce33eff7f7c7f2a757f88ee3deec33c1747912bc94188d842ee5",
       "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-      "approvals": [],
+      "approvals": [
+        {
+          "user": {
+            "id": 24954047,
+            "login": "huangyingting",
+            "type": "User"
+          },
+          "commentId": 5863566270,
+          "commentBody": "/sdlc approve plan v1",
+          "approvedAt": "2026-09-28T04:41:55Z",
+          "hash": "e2bef6eda1b32ae606f41d634a693523e899dd445e18a01f4a4816fb089a60f5",
+          "version": 1,
+          "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+        }
+      ],
       "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
     }
   },
   "pending": null,
-  "lastCommentId": 5863512424,
+  "lastCommentId": 5863566270,
   "receipts": [
     {
       "id": 5863512424,
       "message": "Command #5863512424 recorded: approve spec v1."
+    },
+    {
+      "id": 5863566270,
+      "message": "Command #5863566270 recorded: approve plan v1."
     }
   ],
-  "sealed": false
+  "sealed": true
 }
