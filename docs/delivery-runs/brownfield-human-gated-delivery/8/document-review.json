@@ -21,13 +21,32 @@
       "hash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
       "specHash": null,
       "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-      "approvals": [],
+      "approvals": [
+        {
+          "user": {
+            "id": 24954047,
+            "login": "huangyingting",
+            "type": "User"
+          },
+          "commentId": 5863041330,
+          "commentBody": "/sdlc approve spec v1",
+          "approvedAt": "2026-09-28T03:54:58Z",
+          "hash": "fb56dab10717a971b0dadbc2e8f9bc50777b1d4d2dce6e5d57ae191ec47416b8",
+          "version": 1,
+          "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+        }
+      ],
       "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
     },
     "plan": null
   },
   "pending": null,
-  "lastCommentId": 0,
-  "receipts": [],
+  "lastCommentId": 5863041330,
+  "receipts": [
+    {
+      "id": 5863041330,
+      "message": "Command #5863041330 recorded: approve spec v1."
+    }
+  ],
   "sealed": false
 }
