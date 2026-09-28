@@ -5,9 +5,11 @@ import {
   type CreateTicketInput,
   type Ticket,
   type TicketPriority,
+  type TicketOwner,
   type TicketStatus,
   type TicketSummary,
   formatTicketReference,
+  ticketOwnerSchema,
 } from "./ticket";
 
 type TicketRow = {
@@ -17,6 +19,7 @@ type TicketRow = {
   category: Ticket["category"];
   priority: TicketPriority;
   status: TicketStatus;
+  owner: TicketOwner | null;
   requester_name: string;
   requester_email: string;
   created_at: string;
@@ -39,6 +42,7 @@ function mapTicketRow(row: TicketRow): Ticket {
     category: row.category,
     priority: row.priority,
     status: row.status,
+    owner: row.owner,
     requesterName: row.requester_name,
     requesterEmail: row.requester_email,
     createdAt: row.created_at,
@@ -69,6 +73,13 @@ export class TicketStore {
         updated_at TEXT NOT NULL
       );
     `);
+    const columns = this.database.prepare("PRAGMA table_info(tickets)").all() as { name: string }[];
+    if (!columns.some((column) => column.name === "owner")) {
+      this.database.exec(`
+        ALTER TABLE tickets ADD COLUMN owner TEXT
+          CHECK (owner IN ('avery-stone', 'jordan-lee'))
+      `);
+    }
     if (seed) this.seed();
   }
 
@@ -140,7 +151,12 @@ export class TicketStore {
     }
   }
 
-  list(filters: { status?: TicketStatus; priority?: TicketPriority; query?: string } = {}) {
+  list(filters: {
+    status?: TicketStatus;
+    priority?: TicketPriority;
+    query?: string;
+    owner?: TicketOwner | "unassigned";
+  } = {}) {
     const clauses: string[] = [];
     const values: string[] = [];
     if (filters.status) {
@@ -150,6 +166,12 @@ export class TicketStore {
     if (filters.priority) {
       clauses.push("priority = ?");
       values.push(filters.priority);
+    }
+    if (filters.owner === "unassigned") {
+      clauses.push("owner IS NULL");
+    } else if (filters.owner) {
+      clauses.push("owner = ?");
+      values.push(filters.owner);
     }
     if (filters.query) {
       clauses.push(`(
@@ -221,6 +243,21 @@ export class TicketStore {
       UPDATE tickets SET status = ?, updated_at = ? WHERE id = ?
     `).run(status, new Date().toISOString(), id);
     return result.changes > 0;
+  }
+
+  updateOwner(id: number, owner: TicketOwner | "" | null) {
+    if (!Number.isSafeInteger(id) || id < 1) throw new Error("Ticket not found.");
+    const ticket = this.find(id);
+    if (!ticket) throw new Error("Ticket not found.");
+    const parsed = ticketOwnerSchema.safeParse(owner);
+    if (!parsed.success) throw new Error("Invalid ticket owner.");
+    if (ticket.owner === parsed.data) return true;
+
+    const now = new Date().toISOString();
+    this.database.prepare(`
+      UPDATE tickets SET owner = ?, updated_at = ? WHERE id = ?
+    `).run(parsed.data, now < ticket.updatedAt ? ticket.updatedAt : now, id);
+    return true;
   }
 
   close() {
