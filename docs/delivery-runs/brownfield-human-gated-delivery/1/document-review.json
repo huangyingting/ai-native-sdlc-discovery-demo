@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "reviewProfile": "decisions-v1",
+  "discovery": {
+    "questions": [],
+    "decisions": []
+  },
+  "intent": 1,
+  "baseline": "40e17c9853be3655ba927142d1d8e916f262d924",
+  "intentSnapshot": {
+    "title": "[Development rehearsal] Discover and deliver ticket ownership",
+    "body": "Delivery Execution: development-test\n\nThis is an explicitly authorized scripted development rehearsal using the\nrepository owner's account. It is not independent Human review, genuine Human\nacceptance, or evidence of three completed live scenarios. Use the actual\nversion-bound decision commands; do not infer approval from this statement.\n\n## Problem or opportunity\n\nThe existing IT service desk under demos/it-service-desk can create, search,\nand update tickets, but has no owner field. During the simulated support-team\nhandoff, agents cannot see who is responsible or identify unassigned work.\nThe source baseline demonstrates the missing capability. We have no customer\ninterviews, measured business baseline, or verified productivity claims.\n\n## Proposed outcome\n\nMake responsibility visible on the queue and ticket detail, support a simple\nownership handoff, and preserve existing tickets and workflows. Evaluate the\nresult using observable application behavior, exact fixture result sets, and\ndata preservation, not invented business metrics. Alternatives include keeping\nthe current process or adding only visibility without filtering.\n\n## Affected users and systems\n\nSupport agents and team leads using the existing SQLite-backed IT service desk.\nThe fixture people and tickets are synthetic demonstration data.\n\n## Constraints and non-goals\n\nKeep a small brownfield change. Preserve ticket identifiers, existing values\nand timestamps during migration, and preserve create/status/search/summary\nbehavior. Use labeled keyboard-usable controls, explicit invalid-input errors,\nand persisted behavior after restarting the same container/volume.\n\nDo not add authentication, external identity integration, notifications, SLAs,\nbulk assignment, free-text audit history, or unrelated dashboards.\n\nThe existing ownership scenario manifest and acceptance checklist are candidate\ndemo fixtures and observable checks, not a substitute for answering the policy\nquestions below. After those decisions, retain AC-1 through AC-5 for migration,\nassignment/reassignment/clearing, exact filter intersections, accessibility and\ninvalid-input preservation, and unchanged ticket creation/status behavior.\nDo not copy implementation from the previously completed demo repository.\n\n## Open questions\n\nRegister these three policy choices as blocking discovery questions; do not\nsilently decide them from candidate fixtures or older example documents:\n\n1. May tickets remain unassigned (including existing and new tickets), or must\n   every ticket have an owner?\n2. Should owners come from the fixed local roster Avery Stone (avery-stone)\n   and Jordan Lee (jordan-lee), or be entered as free text?\n3. Is displaying ownership sufficient, or should the queue also filter by\n   owner in combination with existing search, status, and priority filters?\n\nAdditional consequential ambiguities should be made explicit rather than\ninventing decisions. AI proposes the Spec; only recorded decisions followed\nby explicit approval authorize advancement.\n"
+  },
+  "counters": {
+    "spec": 0,
+    "plan": 0
+  },
+  "documents": {
+    "spec": null,
+    "plan": null
+  },
+  "pending": null,
+  "lastCommentId": 0,
+  "receipts": [],
+  "sealed": false
+}
