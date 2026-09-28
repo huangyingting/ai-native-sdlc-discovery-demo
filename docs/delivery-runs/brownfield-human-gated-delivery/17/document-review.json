@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "reviewProfile": "decisions-v1",
+  "discovery": {
+    "questions": [],
+    "decisions": []
+  },
+  "intent": 17,
+  "baseline": "a2004d37bab5d4dbc758f3bdf9599547b4a45ad0",
+  "intentSnapshot": {
+    "title": "[Maintenance continuation] Database readiness with corrected test harness",
+    "body": "Delivery Execution: development-test\n\n## Maintenance continuation, not a contract rewrite\n\nContinue the operational readiness need observed after accepted ownership\ndelivery #1. This is a new run replacing cancelled maintenance Intent #8.\nPreserve all prior artifacts, branches, PRs, accepted volumes, and evidence.\nThe ownership baseline remains main commit\n`a2004d37bab5d4dbc758f3bdf9599547b4a45ad0`; no readiness production code merged.\n\n## Observed evidence and failed attempt\n\nAn isolated replica of accepted ownership image\n`ghcr.io/huangyingting/ai-native-sdlc-discovery-demo-it-service-desk@sha256:09bf8f338aaccaacb0290eafc6fe65c7f917cd8642688406aef93d24b0eb36a2`\nwith `SERVICE_DESK_DB_PATH=/dev/null/service-desk.db` returned health 200\n`{\"status\":\"ok\"}`, dashboard 500, and readiness 404. This was deliberate fault\ninjection, not a production outage. No accepted volume was attached.\n\nMaintenance #8 reached implementation PR #14, but real Green validation failed\n(local 44 pass / 4 fail; Stage CI 36378117293 attempt 2 failed). The frozen tests\nhad two harness defects hidden by missing-route Red: returning a mock function\nfrom `beforeEach` made Vitest invoke it as cleanup, and an existing SQLite\nobserver connection retained stale `SELECT *` column metadata after migration\non another connection. Independent reproduction showed schema refresh/reopen\nresolves the latter. The run was cancelled rather than rewriting frozen tests\nor weakening production code/checks.\n\n## Explicit product outcome\n\nPreserve `/api/health` exactly: HTTP 200 with `{\"status\":\"ok\"}`, independent of\ndatabase availability. Add separate Node.js `/api/ready`, dynamically evaluated\non every request through existing `getTicketStore().summary()`.\n\n- Success: HTTP 200 with exactly `{\"status\":\"ready\"}`.\n- Initialization or summary-read exception: HTTP 503 with exactly\n  `{\"status\":\"unavailable\"}` and one fixed, bounded generic readiness-failure log\n  message. Neither response nor log may expose error text, paths, ticket data,\n  credentials, or stack traces.\n- Both readiness outcomes include `Cache-Control: no-store`.\n- A later request must re-evaluate and reflect repaired storage, without cached\n  failure or success.\n- Reuse the current accessor unchanged: its singleton is assigned only after\n  successful construction. No second store abstraction or standalone SELECT 1.\n- Existing first-use schema creation, nullable ownership migration, and seeding\n  are allowed. Subsequent probes must preserve all persisted rows/fields.\n- Preserve all 37 existing baseline tests, ownership and other application\n  behavior, health, dependencies, shared automation, and earlier run records.\n\n## Grounded testing and approval\n\nUse existing direct-module Vitest conventions, not an invented HTTP harness.\nCreate one new readiness test file with all required deep assertions before\nImplementation: exact bodies/status/headers; accessor and summary invocation;\ninit/read failure; generic sanitized logging; failure-to-success; successive\nreads; dynamic route; real isolated file-backed repair, migration, seeding and\ncomplete-row non-mutation; unchanged liveness and existing behavior.\n\nBefore the route exists, each named scenario must assert route existence inside\nits own test body before guarded dynamic import. No import, collection, hook,\nstartup failure or skip counts as controlled Red. Record every and only\nactually observed assertion-failing name in this run's expected-failure manifest.\n\nFix the identified test harness causes in the NEW unapproved test file:\n`beforeEach` must use a block with no returned mock/cleanup value; observe\npost-migration persisted data through a fresh read-only connection or explicit\nschema refresh. Close all test-owned handles in cleanup.\n\nReview the deeper test bodies for lifecycle/observer defects before freezing.\nAn isolated, explicitly labelled pre-approval harness experiment may exercise\nthe tests against the unmerged candidate from PR #14 outside the Tests branch;\nit is not stage Green, production delivery, or permission to add production\ncode to a Tests commit. All actual stage checks remain required.\n\n## Delivery and runbook acceptance\n\nUpdate the application README with exact liveness/readiness contracts, local\ncommands, generic failure diagnosis, private configuration inspection and\nrepair/restart, isolation warnings, and local-demo/non-production limitations.\n\nAfter protected merge and publication, use the SAME immutable image digest in\nseparate healthy and fault-injected instances, never an accepted volume.\nObserve healthy ready 200, faulted ready 503, no-store and exact bodies, health\n200 in both, fixed sanitized failure logging, populated ownership rows unchanged\nacross repeated probes, and a working dashboard/ownership UI. Verify documented\nrepair/restart. Only then submit digest-bound development-test acceptance.\n\n## Scope and non-goals\n\nThis retains the product scope of #8: readiness, tests and related runbook only.\nDo not change approved ownership behavior/tests, previous lifecycle artifacts,\nshared automation, dependencies, infrastructure, authentication, metrics,\nalerting, or review policy. No production incident, customer benefit, SLO,\navailability certification, independent Human review, or Demo Ready claim.\n\nAlternatives: retain manual dashboard checks (no dedicated routing signal), or\nrepurpose health (breaks liveness compatibility). A separate endpoint is the\nexplicit choice. Raise consequential contradictions rather than silently\nchanging it; no product choice is intentionally unresolved.\n"
+  },
+  "counters": {
+    "spec": 1,
+    "plan": 1
+  },
+  "documents": {
+    "spec": {
+      "version": 1,
+      "hash": "dc1c704edd16ce33eff7f7c7f2a757f88ee3deec33c1747912bc94188d842ee5",
+      "specHash": null,
+      "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+      "approvals": [
+        {
+          "user": {
+            "id": 24954047,
+            "login": "huangyingting",
+            "type": "User"
+          },
+          "commentId": 5863512424,
+          "commentBody": "/sdlc approve spec v1",
+          "approvedAt": "2026-09-28T04:38:52Z",
+          "hash": "dc1c704edd16ce33eff7f7c7f2a757f88ee3deec33c1747912bc94188d842ee5",
+          "version": 1,
+          "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+        }
+      ],
+      "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+    },
+    "plan": {
+      "version": 1,
+      "hash": "e2bef6eda1b32ae606f41d634a693523e899dd445e18a01f4a4816fb089a60f5",
+      "specHash": "dc1c704edd16ce33eff7f7c7f2a757f88ee3deec33c1747912bc94188d842ee5",
+      "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+      "approvals": [
+        {
+          "user": {
+            "id": 24954047,
+            "login": "huangyingting",
+            "type": "User"
+          },
+          "commentId": 5863566270,
+          "commentBody": "/sdlc approve plan v1",
+          "approvedAt": "2026-09-28T04:41:55Z",
+          "hash": "e2bef6eda1b32ae606f41d634a693523e899dd445e18a01f4a4816fb089a60f5",
+          "version": 1,
+          "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+        }
+      ],
+      "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
+    }
+  },
+  "pending": null,
+  "lastCommentId": 5863566270,
+  "receipts": [
+    {
+      "id": 5863512424,
+      "message": "Command #5863512424 recorded: approve spec v1."
+    },
+    {
+      "id": 5863566270,
+      "message": "Command #5863566270 recorded: approve plan v1."
+    }
+  ],
+  "sealed": true
+}

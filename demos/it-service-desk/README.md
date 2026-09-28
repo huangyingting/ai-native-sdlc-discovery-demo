@@ -54,6 +54,38 @@ For disposable local development only, deleting that file resets demo data.
 Do not reset a shared checkout for a presentation; use an isolated prepared
 copy as described below.
 
+## Liveness and database readiness
+
+`/api/health` is a database-independent liveness check. It returns HTTP 200
+with exactly `{"status":"ok"}` while the application process is running.
+`/api/ready` checks the ticket store and its summary on every request. It returns
+HTTP 200 with exactly `{"status":"ready"}` when the database can be initialized
+and read, or HTTP 503 with exactly `{"status":"unavailable"}` otherwise. Both
+readiness responses include `Cache-Control: no-store`.
+
+Check both endpoints locally:
+
+```powershell
+curl.exe -i http://localhost:3000/api/health
+curl.exe -i http://localhost:3000/api/ready
+```
+
+If liveness succeeds but readiness is unavailable, check the application
+console for the generic `Service desk readiness check failed` message. It does
+not include the underlying error. Privately inspect `SERVICE_DESK_DB_PATH` in
+the local process environment, or confirm that the default
+`data/service-desk.db` location and its parent directory are accessible and
+writable by the application. Do not paste database paths, credentials, ticket
+data, or private exception details into issues, logs, or reports. Repair the
+local path or storage permissions, then request readiness again; restart the
+application after configuration changes or if the database connection needs
+to be reopened.
+
+Only use disposable, isolated local storage for fault injection or repair
+experiments. Never point an experiment at a shared checkout, presentation
+database, or accepted volume. This service desk is a local demonstration, not a
+production service or an availability guarantee.
+
 ## Validate
 
 ```powershell
