@@ -2,7 +2,28 @@
   "version": 2,
   "reviewProfile": "decisions-v1",
   "discovery": {
-    "questions": [],
+    "questions": [
+      {
+        "id": "Q-1",
+        "question": "May tickets remain unassigned (including existing and new tickets), or must every ticket have an owner?",
+        "options": "Allow unassigned tickets, preserving a visible unassigned state and permitting ownership to be cleared / require every ticket to have an owner, preventing creation or clearing without a valid owner."
+      },
+      {
+        "id": "Q-2",
+        "question": "Should owners come from the fixed local roster Avery Stone (avery-stone) and Jordan Lee (jordan-lee), or be entered as free text?",
+        "options": "Use the fixed local roster for consistent identities and controlled validation / accept free text for flexibility, with greater risk of inconsistent names and matching."
+      },
+      {
+        "id": "Q-3",
+        "question": "Is displaying ownership sufficient, or should the queue also filter by owner in combination with existing search, status, and priority filters?",
+        "options": "Display ownership without adding a filter for the smaller change / add an owner filter that intersects with search, status, and priority for stronger queue discovery."
+      },
+      {
+        "id": "Q-4",
+        "question": "If every ticket must have an owner, how should existing ownerless tickets be handled during migration?",
+        "options": "Backfill a Human-selected default owner for all existing tickets / require an explicit migration mapping for existing tickets / retain existing tickets as unassigned exceptions while requiring ownership for new and subsequently edited tickets; each option trades migration simplicity against attribution accuracy and policy consistency."
+      }
+    ],
     "decisions": []
   },
   "intent": 1,
@@ -12,21 +33,21 @@
     "body": "Delivery Execution: development-test\n\nThis is an explicitly authorized scripted development rehearsal using the\nrepository owner's account. It is not independent Human review, genuine Human\nacceptance, or evidence of three completed live scenarios. Use the actual\nversion-bound decision commands; do not infer approval from this statement.\n\n## Problem or opportunity\n\nThe existing IT service desk under demos/it-service-desk can create, search,\nand update tickets, but has no owner field. During the simulated support-team\nhandoff, agents cannot see who is responsible or identify unassigned work.\nThe source baseline demonstrates the missing capability. We have no customer\ninterviews, measured business baseline, or verified productivity claims.\n\n## Proposed outcome\n\nMake responsibility visible on the queue and ticket detail, support a simple\nownership handoff, and preserve existing tickets and workflows. Evaluate the\nresult using observable application behavior, exact fixture result sets, and\ndata preservation, not invented business metrics. Alternatives include keeping\nthe current process or adding only visibility without filtering.\n\n## Affected users and systems\n\nSupport agents and team leads using the existing SQLite-backed IT service desk.\nThe fixture people and tickets are synthetic demonstration data.\n\n## Constraints and non-goals\n\nKeep a small brownfield change. Preserve ticket identifiers, existing values\nand timestamps during migration, and preserve create/status/search/summary\nbehavior. Use labeled keyboard-usable controls, explicit invalid-input errors,\nand persisted behavior after restarting the same container/volume.\n\nDo not add authentication, external identity integration, notifications, SLAs,\nbulk assignment, free-text audit history, or unrelated dashboards.\n\nThe existing ownership scenario manifest and acceptance checklist are candidate\ndemo fixtures and observable checks, not a substitute for answering the policy\nquestions below. After those decisions, retain AC-1 through AC-5 for migration,\nassignment/reassignment/clearing, exact filter intersections, accessibility and\ninvalid-input preservation, and unchanged ticket creation/status behavior.\nDo not copy implementation from the previously completed demo repository.\n\n## Open questions\n\nRegister these three policy choices as blocking discovery questions; do not\nsilently decide them from candidate fixtures or older example documents:\n\n1. May tickets remain unassigned (including existing and new tickets), or must\n   every ticket have an owner?\n2. Should owners come from the fixed local roster Avery Stone (avery-stone)\n   and Jordan Lee (jordan-lee), or be entered as free text?\n3. Is displaying ownership sufficient, or should the queue also filter by\n   owner in combination with existing search, status, and priority filters?\n\nAdditional consequential ambiguities should be made explicit rather than\ninventing decisions. AI proposes the Spec; only recorded decisions followed\nby explicit approval authorize advancement.\n"
   },
   "counters": {
-    "spec": 0,
+    "spec": 1,
     "plan": 0
   },
   "documents": {
-    "spec": null,
+    "spec": {
+      "version": 1,
+      "hash": "08109886d3fabd4b16614f2eb5bd0d9ae63d203d8f4282c901f2758253e63448",
+      "specHash": null,
+      "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
+      "approvals": [],
+      "contextHash": "ad452e1d67260f3fc9364f609d3556142d82653b521272ba1966183c66df43ea"
+    },
     "plan": null
   },
-  "pending": {
-    "stage": "spec",
-    "version": 1,
-    "feedback": "Initial draft. Use the Human Intent and discussion; expose unresolved decisions.",
-    "policyHash": "45e6e87eb7670d8c20c510d6cc814cb6518f94ae957454d793c3672e39ec7c7a",
-    "specHash": null,
-    "contextHash": "7bc27b29f2a52f2f9191a14d78a5e107e00c1fe2e31033be3331a6b4662fb463"
-  },
+  "pending": null,
   "lastCommentId": 0,
   "receipts": [],
   "sealed": false
