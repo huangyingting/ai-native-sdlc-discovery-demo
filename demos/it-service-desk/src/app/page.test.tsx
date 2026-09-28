@@ -148,6 +148,7 @@ describe("Dashboard", () => {
 
     const mounted = document.createElement("div");
     document.body.append(mounted);
+    vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
     const root = createRoot(mounted);
     try {
       act(() => root.render(element));
@@ -181,6 +182,7 @@ describe("Dashboard", () => {
     } finally {
       act(() => root.unmount());
       mounted.remove();
+      vi.unstubAllGlobals();
     }
   });
 });

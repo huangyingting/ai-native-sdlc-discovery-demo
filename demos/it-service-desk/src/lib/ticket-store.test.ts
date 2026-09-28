@@ -47,30 +47,35 @@ function createLegacyDatabase() {
   temporaryDirectories.push(directory);
   const filename = join(directory, "service-desk.db");
   const database = new DatabaseSync(filename);
-  database.exec(`
-    CREATE TABLE tickets (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      category TEXT NOT NULL,
-      priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high', 'critical')),
-      status TEXT NOT NULL CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
-      requester_name TEXT NOT NULL,
-      requester_email TEXT NOT NULL,
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-  `);
-  const insert = database.prepare(`
-    INSERT INTO tickets (
-      id, title, description, category, priority, status,
-      requester_name, requester_email, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  for (const fixture of legacyFixtures) insert.run(...fixture);
-  const rows = database.prepare("SELECT * FROM tickets ORDER BY id").all();
-  database.close();
-  return { filename, rows };
+  try {
+    database.exec(`
+      CREATE TABLE tickets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL,
+        priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high', 'critical')),
+        status TEXT NOT NULL CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
+        requester_name TEXT NOT NULL,
+        requester_email TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `);
+    const insert = database.prepare(`
+      INSERT INTO tickets (
+        id, title, description, category, priority, status,
+        requester_name, requester_email, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    for (const fixture of legacyFixtures) insert.run(...fixture);
+    return {
+      filename,
+      rows: database.prepare("SELECT * FROM tickets ORDER BY id").all(),
+    };
+  } finally {
+    database.close();
+  }
 }
 
 function withoutOwnershipUpdate(ticket: OwnedTicket) {
