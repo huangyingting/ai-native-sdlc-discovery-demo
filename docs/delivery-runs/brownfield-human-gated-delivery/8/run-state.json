@@ -4,8 +4,8 @@
   "repository": "huangyingting/ai-native-sdlc-discovery-demo",
   "baseline": "a2004d37bab5d4dbc758f3bdf9599547b4a45ad0",
   "mode": "development-test",
-  "status": "active",
-  "lastCommentId": 5863441737,
+  "status": "cancelled",
+  "lastCommentId": 5863503427,
   "delivery": null,
   "failure": null,
   "events": [
@@ -14,6 +14,18 @@
       "at": "2026-09-28T04:34:10Z",
       "commentId": 5863441737,
       "message": "Command #5863441737 rejected: Use /sdlc help|status|pause|resume|cancel, or /sdlc accept|reject sha256:<digest> followed by your observed results on a new line."
+    },
+    {
+      "type": "cancel",
+      "at": "2026-09-28T04:38:19Z",
+      "commentId": 5863503427,
+      "actor": "huangyingting"
+    },
+    {
+      "type": "command-receipt",
+      "at": "2026-09-28T04:38:19Z",
+      "commentId": 5863503427,
+      "message": "Command #5863503427 recorded: cancel."
     }
   ]
 }
